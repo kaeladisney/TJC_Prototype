@@ -1,4 +1,4 @@
-export type StatusBadgeType = 'New' | 'Special' | 'Forms' | 'Urgent';
+export type StatusBadgeType = 'New' | 'Special' | 'Forms' | 'Pay' | 'Notes';
 
 export interface StatusBadge {
   type: StatusBadgeType;
@@ -9,13 +9,21 @@ export interface PatientDetails {
   dcPreference: string;
   planType: string;
   cycleDate: string;
+  dateOfBirth?: string;
+  phoneNumber?: string;
+  homeClinic?: string;
+  visitsLeft?: string;
+  careCards?: number;
 }
 
 export interface Patient {
   id: string;
-  initials: string;
   name: string;
-  statusBadges: StatusBadge[];
+  initials: string;
+  statusBadges: Array<{
+    type: StatusBadgeType;
+    label: string;
+  }>;
   details: PatientDetails;
 }
 

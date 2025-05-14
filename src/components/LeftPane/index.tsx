@@ -8,32 +8,29 @@ import CollapseIcon from '../icons/Collapse';
 import ExpandIcon from '../icons/Expand';
 import PatientCard from './PatientCard';
 import PatientCardExpanded from './PatientCardExpanded';
+import PatientDetailsDrawer from './PatientDetailsDrawer';
+import { Patient, StatusBadgeType } from '../../types/patient';
 
 const PaneWrapper = styled(Box)<{ isCollapsed: boolean }>(({ isCollapsed }) => ({
   width: isCollapsed ? 88 : 450,
-  height: 'calc(100vh - 76px)', // Subtract header height
+  height: '100%',
   backgroundColor: '#F8FAFC',
-  position: 'fixed',
-  left: 0,
-  top: 76, // Position below header
-  boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.12), 0px 0px 2px rgba(0, 0, 0, 0.12)',
-  transition: 'width 0.3s ease-in-out',
+  borderRight: '1px solid #E5E7EB',
+  transition: 'width 0.3s ease',
   display: 'flex',
   flexDirection: 'column',
-  zIndex: 100 // Increased z-index to ensure it's above other content
+  overflow: 'hidden',
 }));
 
 const Header = styled(Box)<{ isCollapsed: boolean }>(({ isCollapsed }) => ({
   width: '100%',
   height: 76,
-  borderBottom: '1px solid #E2E2E6',
-  padding: isCollapsed ? '27px 0' : '16px 24px',
+  padding: isCollapsed ? 0 : '16px 24px',
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'space-between',
+  justifyContent: isCollapsed ? 'center' : 'space-between',
+  backgroundColor: '#F8FAFC',
   position: 'relative',
-  backgroundColor: '#F8FAFC', // Match parent background color
-  zIndex: 101 // Higher than PaneWrapper
 }));
 
 const PaneHeaderText = styled(Typography)<{ isCollapsed: boolean }>(({ isCollapsed }) => ({
@@ -48,31 +45,28 @@ const PaneHeaderText = styled(Typography)<{ isCollapsed: boolean }>(({ isCollaps
 
 const Content = styled(Box)<{ isCollapsed: boolean }>(({ isCollapsed }) => ({
   padding: isCollapsed ? '12px 0' : '24px',
-  height: 'calc(100vh - 152px)', // Subtract both headers
+  paddingTop: '0px',
+  flex: 1,
   overflowY: 'auto',
-  position: 'relative',
-  zIndex: 99, // Lower than PaneWrapper
   display: 'flex',
   flexDirection: 'column',
-  alignItems: 'center',
-  gap: isCollapsed ? '12px' : '24px'
+  width: '100%',
+  gap: isCollapsed ? '24px' : '0px',
+  '& > *': {  // Ensure all direct children take full width
+    width: '100%'
+  }
 }));
 
 const IconWrapper = styled(Box)<{ isCollapsed: boolean }>(({ isCollapsed }) => ({
-  cursor: 'pointer',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  width: 22,
-  height: 22,
+  width: 24,
+  height: 24,
+  cursor: 'pointer',
   '&:hover': {
     opacity: 0.8,
   },
-  ...(isCollapsed && {
-    position: 'absolute',
-    left: '50%',
-    transform: 'translateX(-50%)',
-  })
 }));
 
 const StatusHeaderWrapper = styled(Box)<{ isCollapsed: boolean }>(({ isCollapsed }) => ({
@@ -149,9 +143,21 @@ const CompletedHeader: React.FC = () => {
 const PatientSection = styled(Box)<{ isCollapsed: boolean }>(({ isCollapsed }) => ({
   display: 'flex',
   flexDirection: 'column',
-  gap: isCollapsed ? '12px' : '12px',
+  gap: isCollapsed ? '20px' : '8px',
   width: '100%',
-  alignItems: isCollapsed ? 'center' : 'stretch',
+  minWidth: 0,
+  alignItems: 'stretch',
+  '& > *': {  // Ensure all direct children take full width
+    width: '100%'
+  }
+}));
+
+const SectionWrapper = styled(Box)<{ isCollapsed: boolean }>(({ isCollapsed }) => ({
+  width: '100%',
+  marginTop: isCollapsed ? '24px' : '12px',
+  '&:first-of-type': {
+    marginTop: 0
+  }
 }));
 
 const DraggableItem = styled(Box)({
@@ -164,184 +170,85 @@ const DraggableItem = styled(Box)({
   }
 });
 
-interface Status {
-  label: 'New' | 'Special' | 'Forms' | 'Urgent';
+interface CardStatus {
+  label: StatusBadgeType;
   color: string;
   bgColor: string;
 }
 
-interface Patient {
-  name: string;
-  initials: string;
-  statuses: Status[];
-  details: {
-    dcPreference: string;
-    planType: string;
-    cycleDate: string;
-  };
-  isExpanded: boolean;
-}
-
 const LeftPane: React.FC = () => {
-  const { isCollapsed, toggleCollapse } = useLeftPaneContext();
-  const [patients, setPatients] = useState<Patient[]>([
-    {
-      name: 'Thomas Newman',
-      initials: 'TN',
-      statuses: [
-        {
-          label: 'New' as const,
-          color: '#008D3E',
-          bgColor: '#E2FFE9',
-        },
-        {
-          label: 'Urgent' as const,
-          color: '#B15A17',
-          bgColor: '#FFEBDC',
-        },
-        {
-          label: 'Forms' as const,
-          color: '#026AA2',
-          bgColor: '#E0F2FE',
-        }
-      ],
-      details: {
-        dcPreference: 'Dr. Will Murillo, D.C.',
-        planType: 'Wellness Plan',
-        cycleDate: '1/15/2024',
-      },
-      isExpanded: true,
-    },
-    {
-      name: 'Sarah Johnson',
-      initials: 'SJ',
-      statuses: [
-        {
-          label: 'Special' as const,
-          color: '#6941C6',
-          bgColor: '#F4F3FF',
-        },
-        {
-          label: 'Forms' as const,
-          color: '#026AA2',
-          bgColor: '#E0F2FE',
-        },
-        {
-          label: 'New' as const,
-          color: '#008D3E',
-          bgColor: '#E2FFE9',
-        },
-        {
-          label: 'Urgent' as const,
-          color: '#B15A17',
-          bgColor: '#FFEBDC',
-        }
-      ],
-      details: {
-        dcPreference: 'none',
-        planType: '20 Visits',
-        cycleDate: '2/1/2024',
-      },
-      isExpanded: false,
-    },
-  ]);
-
+  const { 
+    isCollapsed, 
+    toggleCollapse, 
+    patients, 
+    reorderPatients, 
+    removePatient,
+    selectedPatient,
+    isDetailsDrawerOpen,
+    openDetailsDrawer,
+    closeDetailsDrawer
+  } = useLeftPaneContext();
   const [patientsWithDoctor, setPatientsWithDoctor] = useState<Patient[]>([
     {
+      id: '3',
       name: 'Michael Chang',
       initials: 'MC',
-      statuses: [
-        {
-          label: 'Special' as const,
-          color: '#6941C6',
-          bgColor: '#F4F3FF',
-        },
-        {
-          label: 'Forms' as const,
-          color: '#026AA2',
-          bgColor: '#E0F2FE',
-        }
+      statusBadges: [
+        { type: 'Special', label: 'Special Care' },
+        { type: 'Forms', label: 'Forms Pending' },
+        { type: 'Notes', label: 'Notes Available' }
       ],
       details: {
         dcPreference: 'Dr. Sarah Miller, D.C.',
         planType: '10 Visits',
         cycleDate: '1/20/2024',
-      },
-      isExpanded: true,
+      }
     },
     {
+      id: '4',
       name: 'Emily Rodriguez',
       initials: 'ER',
-      statuses: [
-        {
-          label: 'New' as const,
-          color: '#008D3E',
-          bgColor: '#E2FFE9',
-        },
-        {
-          label: 'Urgent' as const,
-          color: '#B15A17',
-          bgColor: '#FFEBDC',
-        },
-        {
-          label: 'Forms' as const,
-          color: '#026AA2',
-          bgColor: '#E0F2FE',
-        }
+      statusBadges: [
+        { type: 'New', label: 'New Patient' },
+        { type: 'Pay', label: 'Payment Required' },
+        { type: 'Forms', label: 'Forms Pending' }
       ],
       details: {
         dcPreference: 'Dr. James Wilson, D.C.',
         planType: '6 Visits',
         cycleDate: '1/25/2024',
-      },
-      isExpanded: false,
+      }
     }
   ]);
 
   const [completedPatients, setCompletedPatients] = useState<Patient[]>([
     {
+      id: '5',
       name: 'Robert Martinez',
       initials: 'RM',
-      statuses: [
-        {
-          label: 'Forms' as const,
-          color: '#026AA2',
-          bgColor: '#E0F2FE',
-        },
-        {
-          label: 'Special' as const,
-          color: '#6941C6',
-          bgColor: '#F4F3FF',
-        }
+      statusBadges: [
+        { type: 'Forms' as StatusBadgeType, label: 'Forms Complete' },
+        { type: 'Special' as StatusBadgeType, label: 'Special Care' }
       ],
       details: {
         dcPreference: 'Dr. Sarah Miller, D.C.',
         planType: '6 Visits',
         cycleDate: '1/22/2024',
-      },
-      isExpanded: true,
+      }
     },
     {
+      id: '6',
       name: 'Lisa Thompson',
       initials: 'LT',
-      statuses: [
-        {
-          label: 'New' as const,
-          color: '#008D3E',
-          bgColor: '#E2FFE9',
-        },
-        {
-          label: 'Forms' as const,
-          color: '#026AA2',
-          bgColor: '#E0F2FE',
-        }
+      statusBadges: [
+        { type: 'New' as StatusBadgeType, label: 'New Patient' },
+        { type: 'Forms' as StatusBadgeType, label: 'Forms Pending' }
       ],
       details: {
         dcPreference: 'Dr. Will Murillo, D.C.',
         planType: 'Initial Visit',
         cycleDate: '1/23/2024',
-      },
-      isExpanded: false,
+      }
     }
   ]);
 
@@ -360,8 +267,7 @@ const LeftPane: React.FC = () => {
         setFunction = setCompletedPatients;
         break;
       default:
-        targetArray = [...patients];
-        setFunction = setPatients;
+        return; // Let context handle checked-in patients
     }
 
     [targetArray[index - 1], targetArray[index]] = [targetArray[index], targetArray[index - 1]];
@@ -382,8 +288,7 @@ const LeftPane: React.FC = () => {
         setFunction = setCompletedPatients;
         break;
       default:
-        targetArray = [...patients];
-        setFunction = setPatients;
+        return; // Let context handle checked-in patients
     }
 
     if (index === targetArray.length - 1) return;
@@ -391,83 +296,64 @@ const LeftPane: React.FC = () => {
     setFunction(targetArray);
   };
 
-  const handleViewProfile = (index: number, section: 'checkedIn' | 'withDoctor' | 'completed' = 'checkedIn') => {
-    let targetArray;
-    switch (section) {
-      case 'withDoctor':
-        targetArray = patientsWithDoctor;
-        break;
-      case 'completed':
-        targetArray = completedPatients;
-        break;
-      default:
-        targetArray = patients;
-    }
-    console.log('View profile:', targetArray[index].name);
+  const handleViewProfile = (patient: Patient) => {
+    openDetailsDrawer(patient);
+  };
+
+  const handleCheckout = () => {
+    // Handle checkout logic
+    closeDetailsDrawer();
   };
 
   const handleRemove = (index: number, section: 'checkedIn' | 'withDoctor' | 'completed' = 'checkedIn') => {
     switch (section) {
+      case 'checkedIn':
+        removePatient(index);
+        break;
       case 'withDoctor':
         setPatientsWithDoctor(prev => prev.filter((_, i) => i !== index));
         break;
       case 'completed':
         setCompletedPatients(prev => prev.filter((_, i) => i !== index));
         break;
-      default:
-        setPatients(prev => prev.filter((_, i) => i !== index));
     }
   };
 
   const moveCard = useCallback((dragIndex: number, hoverIndex: number) => {
-    setPatients((prevPatients) => {
-      const newPatients = [...prevPatients];
-      const draggedPatient = newPatients[dragIndex];
-      newPatients.splice(dragIndex, 1);
-      newPatients.splice(hoverIndex, 0, draggedPatient);
-      return newPatients;
-    });
-  }, []);
+    reorderPatients(dragIndex, hoverIndex);
+  }, [reorderPatients]);
 
   return (
     <DndProvider backend={HTML5Backend}>
       <PaneWrapper isCollapsed={isCollapsed}>
         <Header isCollapsed={isCollapsed}>
-          <PaneHeaderText isCollapsed={isCollapsed}>Patient Queue</PaneHeaderText>
-          <IconWrapper isCollapsed={isCollapsed} onClick={toggleCollapse}>
+          {!isCollapsed && (
+            <PaneHeaderText isCollapsed={isCollapsed}>
+              Patient Queue
+            </PaneHeaderText>
+          )}
+          <IconWrapper 
+            isCollapsed={isCollapsed}
+            onClick={toggleCollapse}
+          >
             {isCollapsed ? <ExpandIcon /> : <CollapseIcon />}
           </IconWrapper>
         </Header>
+
         <Content isCollapsed={isCollapsed}>
-          <StatusHeader />
-          <PatientSection isCollapsed={isCollapsed}>
-            {patients.map((patient, index) => (
-              patient.isExpanded ? (
-                <PatientCardExpanded
-                  key={patient.name}
-                  name={patient.name}
-                  initials={patient.initials}
-                  details={patient.details}
-                  statuses={[
-                    { label: 'New', color: '#008D3E', bgColor: '#E2FFE9' },
-                    { label: 'Forms', color: '#026AA2', bgColor: '#E0F2FE' }
-                  ]}
-                  isFirst={index === 0}
-                  isLast={index === patients.length - 1}
-                  isCheckedInSection={true}
-                  index={index}
-                  moveCard={moveCard}
-                  onMoveUp={() => handleMoveUp(index, 'checkedIn')}
-                  onMoveDown={() => handleMoveDown(index, 'checkedIn')}
-                  onViewProfile={() => handleViewProfile(index, 'checkedIn')}
-                  onRemove={() => handleRemove(index, 'checkedIn')}
-                />
-              ) : (
+          <SectionWrapper isCollapsed={isCollapsed}>
+            <StatusHeader />
+            <PatientSection isCollapsed={isCollapsed}>
+              {patients.map((patient, index) => (
                 <PatientCard
-                  key={patient.name}
+                  key={patient.id}
                   name={patient.name}
                   initials={patient.initials}
-                  statuses={patient.statuses}
+                  statuses={patient.statusBadges.map(badge => ({
+                    label: badge.type,
+                    color: getStatusColor(badge.type),
+                    bgColor: getStatusBgColor(badge.type)
+                  }))}
                   isFirst={index === 0}
                   isLast={index === patients.length - 1}
                   isCheckedInSection={true}
@@ -475,91 +361,113 @@ const LeftPane: React.FC = () => {
                   moveCard={moveCard}
                   onMoveUp={() => handleMoveUp(index, 'checkedIn')}
                   onMoveDown={() => handleMoveDown(index, 'checkedIn')}
-                  onViewProfile={() => handleViewProfile(index, 'checkedIn')}
-                  onRemove={() => handleRemove(index, 'checkedIn')}
+                  onViewProfile={() => handleViewProfile(patient)}
+                  onRemove={() => removePatient(index)}
+                  onClick={() => handleViewProfile(patient)}
                 />
-              )
-            ))}
-          </PatientSection>
-          <Box mt={isCollapsed ? 0 : 3}>
+              ))}
+            </PatientSection>
+          </SectionWrapper>
+
+          <SectionWrapper isCollapsed={isCollapsed}>
             <WithDoctorHeader />
             <PatientSection isCollapsed={isCollapsed}>
               {patientsWithDoctor.map((patient, index) => (
-                patient.isExpanded ? (
-                  <PatientCardExpanded
-                    key={patient.name}
-                    name={patient.name}
-                    initials={patient.initials}
-                    details={patient.details}
-                    statuses={[
-                      { label: 'Special', color: '#6941C6', bgColor: '#F4F3FF' },
-                      { label: 'Forms', color: '#026AA2', bgColor: '#E0F2FE' }
-                    ]}
-                    isFirst={index === 0}
-                    isLast={index === patientsWithDoctor.length - 1}
-                    onMoveUp={() => handleMoveUp(index, 'withDoctor')}
-                    onMoveDown={() => handleMoveDown(index, 'withDoctor')}
-                    onViewProfile={() => handleViewProfile(index, 'withDoctor')}
-                    onRemove={() => handleRemove(index, 'withDoctor')}
-                  />
-                ) : (
-                  <PatientCard
-                    key={patient.name}
-                    name={patient.name}
-                    initials={patient.initials}
-                    statuses={patient.statuses}
-                    isFirst={index === 0}
-                    isLast={index === patientsWithDoctor.length - 1}
-                    onMoveUp={() => handleMoveUp(index, 'withDoctor')}
-                    onMoveDown={() => handleMoveDown(index, 'withDoctor')}
-                    onViewProfile={() => handleViewProfile(index, 'withDoctor')}
-                    onRemove={() => handleRemove(index, 'withDoctor')}
-                  />
-                )
+                <PatientCardExpanded
+                  key={patient.id}
+                  name={patient.name}
+                  initials={patient.initials}
+                  statuses={patient.statusBadges.map(badge => ({
+                    label: badge.type,
+                    color: getStatusColor(badge.type),
+                    bgColor: getStatusBgColor(badge.type)
+                  }))}
+                  details={patient.details}
+                  isFirst={index === 0}
+                  isLast={index === patientsWithDoctor.length - 1}
+                  onMoveUp={() => handleMoveUp(index, 'withDoctor')}
+                  onMoveDown={() => handleMoveDown(index, 'withDoctor')}
+                  onViewProfile={() => handleViewProfile(patient)}
+                  onRemove={() => handleRemove(index, 'withDoctor')}
+                  onClick={() => handleViewProfile(patient)}
+                />
               ))}
             </PatientSection>
-          </Box>
-          <Box mt={isCollapsed ? 0 : 3}>
+          </SectionWrapper>
+
+          <SectionWrapper isCollapsed={isCollapsed}>
             <CompletedHeader />
             <PatientSection isCollapsed={isCollapsed}>
               {completedPatients.map((patient, index) => (
-                patient.isExpanded ? (
-                  <PatientCardExpanded
-                    key={patient.name}
-                    name={patient.name}
-                    initials={patient.initials}
-                    details={patient.details}
-                    statuses={[
-                      { label: 'Forms', color: '#026AA2', bgColor: '#E0F2FE' }
-                    ]}
-                    isFirst={index === 0}
-                    isLast={index === completedPatients.length - 1}
-                    onMoveUp={() => handleMoveUp(index, 'completed')}
-                    onMoveDown={() => handleMoveDown(index, 'completed')}
-                    onViewProfile={() => handleViewProfile(index, 'completed')}
-                    onRemove={() => handleRemove(index, 'completed')}
-                  />
-                ) : (
-                  <PatientCard
-                    key={patient.name}
-                    name={patient.name}
-                    initials={patient.initials}
-                    statuses={patient.statuses}
-                    isFirst={index === 0}
-                    isLast={index === completedPatients.length - 1}
-                    onMoveUp={() => handleMoveUp(index, 'completed')}
-                    onMoveDown={() => handleMoveDown(index, 'completed')}
-                    onViewProfile={() => handleViewProfile(index, 'completed')}
-                    onRemove={() => handleRemove(index, 'completed')}
-                  />
-                )
+                <PatientCard
+                  key={patient.id}
+                  name={patient.name}
+                  initials={patient.initials}
+                  statuses={patient.statusBadges.map(badge => ({
+                    label: badge.type,
+                    color: getStatusColor(badge.type),
+                    bgColor: getStatusBgColor(badge.type)
+                  }))}
+                  isFirst={index === 0}
+                  isLast={index === completedPatients.length - 1}
+                  onMoveUp={() => handleMoveUp(index, 'completed')}
+                  onMoveDown={() => handleMoveDown(index, 'completed')}
+                  onViewProfile={() => handleViewProfile(patient)}
+                  onRemove={() => handleRemove(index, 'completed')}
+                  onClick={() => handleViewProfile(patient)}
+                />
               ))}
             </PatientSection>
-          </Box>
+          </SectionWrapper>
         </Content>
+
+        <PatientDetailsDrawer
+          open={isDetailsDrawerOpen}
+          patient={selectedPatient}
+          onClose={closeDetailsDrawer}
+          onViewProfile={() => {
+            // Handle view profile navigation
+            closeDetailsDrawer();
+          }}
+          onCheckout={handleCheckout}
+        />
       </PaneWrapper>
     </DndProvider>
   );
+};
+
+const getStatusColor = (type: StatusBadgeType): string => {
+  switch (type) {
+    case 'New':
+      return '#008D3E';
+    case 'Special':
+      return '#6941C6';
+    case 'Forms':
+      return '#026AA2';
+    case 'Pay':
+      return '#B54708';
+    case 'Notes':
+      return '#175CD3';
+    default:
+      return '#364152';
+  }
+};
+
+const getStatusBgColor = (type: StatusBadgeType): string => {
+  switch (type) {
+    case 'New':
+      return '#E2FFE9';
+    case 'Special':
+      return '#F4F3FF';
+    case 'Forms':
+      return '#E0F2FE';
+    case 'Pay':
+      return '#FEF6EE';
+    case 'Notes':
+      return '#EEF4FF';
+    default:
+      return '#EEF2F6';
+  }
 };
 
 export default LeftPane; 

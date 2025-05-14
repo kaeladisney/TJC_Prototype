@@ -4,6 +4,7 @@ import Header from './components/Header';
 import Content from './components/Content';
 import LeftPane from './components/LeftPane';
 import { LeftPaneProvider } from './components/LeftPane/LeftPaneContext';
+import { NavigationProvider } from './context/NavigationContext';
 import './styles/fonts.css';
 
 const theme = createTheme({
@@ -69,24 +70,41 @@ const theme = createTheme({
 
 const AppWrapper = styled(Box)({
   display: 'flex',
-  minHeight: '100vh',
+  height: 'calc(100vh - 76px)', // Subtract header height
   backgroundColor: '#F6F6FA',
-  paddingTop: 76, // Height of the header
+  marginTop: 76, // Height of the header
+  overflow: 'hidden', // Prevent body scroll
+  '& > *': {
+    flex: 'none', // Prevent flex growing/shrinking
+  }
+});
+
+const MainContent = styled(Box)({
+  flex: 1, // Take remaining space
+  minWidth: 0, // Prevent overflow
+  height: '100%',
+  overflow: 'hidden', // Container for content scroll
+  display: 'flex',
+  flexDirection: 'column',
 });
 
 const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <LeftPaneProvider>
-        <Box sx={{ minHeight: '100vh' }}>
-          <Header />
-          <AppWrapper>
-            <LeftPane />
-            <Content />
-          </AppWrapper>
-        </Box>
-      </LeftPaneProvider>
+      <NavigationProvider>
+        <LeftPaneProvider>
+          <Box sx={{ height: '100vh', overflow: 'hidden' }}>
+            <Header />
+            <AppWrapper>
+              <LeftPane />
+              <MainContent>
+                <Content />
+              </MainContent>
+            </AppWrapper>
+          </Box>
+        </LeftPaneProvider>
+      </NavigationProvider>
     </ThemeProvider>
   );
 };

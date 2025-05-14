@@ -4,9 +4,11 @@ import { styled } from '@mui/material/styles';
 import { useDrag, useDrop } from 'react-dnd';
 import EllipsisHorizontal from '../icons/EllipsisHorizontal';
 import { useLeftPaneContext } from './LeftPaneContext';
+import { StatusBadgeType } from '../../types/patient';
 
 const CardWrapper = styled(Box)<{ isDragging?: boolean; isCollapsed?: boolean }>(({ isDragging, isCollapsed }) => ({
   width: '100%',
+  maxWidth: '100%',
   height: isCollapsed ? 40 : 72,
   backgroundColor: '#F8FAFC',
   border: isCollapsed ? 'none' : '1px solid #9AA4B2',
@@ -19,16 +21,30 @@ const CardWrapper = styled(Box)<{ isDragging?: boolean; isCollapsed?: boolean }>
   opacity: isDragging ? 0.5 : 1,
   '&:hover': {
     backgroundColor: isCollapsed ? 'transparent' : '#EEF2F6',
-  }
+  },
+  boxSizing: 'border-box',
+  minWidth: 0,
+  alignSelf: 'stretch',
+  ...(isCollapsed && {
+    justifyContent: 'center',
+    padding: 0,
+    border: 'none',
+    margin: '0 auto'
+  })
 }));
 
 const PatientInfo = styled(Box)<{ isCollapsed: boolean }>(({ isCollapsed }) => ({
   display: 'flex',
   alignItems: 'center',
   gap: 12,
+  flex: '1 1 auto',
+  minWidth: 0,
+  width: '100%',
   ...(isCollapsed && {
-    width: 40,
+    width: 'auto',
     height: 40,
+    flex: 'none',
+    justifyContent: 'center'
   })
 }));
 
@@ -100,7 +116,7 @@ interface PatientCardProps {
   name: string;
   initials: string;
   statuses: Array<{
-    label: 'New' | 'Special' | 'Forms' | 'Urgent';
+    label: StatusBadgeType;
     color: string;
     bgColor: string;
   }>;
@@ -113,9 +129,10 @@ interface PatientCardProps {
   onMoveDown?: () => void;
   onViewProfile?: () => void;
   onRemove?: () => void;
+  onClick?: () => void;
 }
 
-const getStatusColors = (label: string): { color: string; bgColor: string } => {
+const getStatusColors = (label: StatusBadgeType): { color: string; bgColor: string } => {
   switch (label) {
     case 'New':
       return { color: '#008D3E', bgColor: '#E2FFE9' };
@@ -123,8 +140,10 @@ const getStatusColors = (label: string): { color: string; bgColor: string } => {
       return { color: '#6941C6', bgColor: '#F4F3FF' };
     case 'Forms':
       return { color: '#026AA2', bgColor: '#E0F2FE' };
-    case 'Urgent':
-      return { color: '#B15A17', bgColor: '#FFEBDC' };
+    case 'Pay':
+      return { color: '#B54708', bgColor: '#FEF6EE' };
+    case 'Notes':
+      return { color: '#175CD3', bgColor: '#EEF4FF' };
     default:
       return { color: '#364152', bgColor: '#EEF2F6' };
   }
@@ -142,7 +161,8 @@ const PatientCard: React.FC<PatientCardProps> = ({
   onMoveUp,
   onMoveDown,
   onViewProfile,
-  onRemove
+  onRemove,
+  onClick
 }) => {
   const { isCollapsed } = useLeftPaneContext();
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
@@ -208,12 +228,23 @@ const PatientCard: React.FC<PatientCardProps> = ({
     setMenuAnchor(null);
   };
 
+  const handleClick = (event: React.MouseEvent) => {
+    if (!menuAnchor) {
+      onClick?.();
+    }
+  };
+
   const displayedStatuses = statuses.slice(0, 2);
   const remainingStatuses = statuses.slice(2);
   const remainingCount = remainingStatuses.length;
 
   return (
-    <CardWrapper ref={ref} isDragging={isDragging} isCollapsed={isCollapsed}>
+    <CardWrapper 
+      ref={ref} 
+      isDragging={isDragging} 
+      isCollapsed={isCollapsed}
+      onClick={handleClick}
+    >
       <PatientInfo isCollapsed={isCollapsed}>
         <Tooltip 
           title={name}

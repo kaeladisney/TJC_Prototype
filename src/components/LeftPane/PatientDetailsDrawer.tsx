@@ -1,0 +1,483 @@
+import React from 'react';
+import { Box, Typography, Button, IconButton, Collapse, Slide } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Patient, StatusBadgeType } from '../../types/patient';
+import { useNavigation } from '../../context/NavigationContext';
+
+const DrawerContainer = styled(Box)({
+  position: 'absolute',
+  top: 76,
+  left: 0,
+  width: 450,
+  height: 'calc(100vh - 76px)',
+  zIndex: 200,
+});
+
+const DrawerWrapper = styled(Box)({
+  width: '100%',
+  height: '100%',
+  backgroundColor: '#F8FAFC',
+  borderRight: '1px solid #E5E7EB',
+  display: 'flex',
+  flexDirection: 'column',
+});
+
+const Header = styled(Box)({
+  padding: '16px 24px',
+  borderBottom: '1px solid #E2E2E6',
+  backgroundColor: '#F8FAFC',
+  position: 'sticky',
+  top: 0,
+  zIndex: 10,
+  height: 77,
+  alignContent: 'center',
+});
+
+const BackButton = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
+  gap: 8,
+  cursor: 'pointer',
+  '&:hover': {
+    opacity: 0.8,
+  },
+});
+
+const BackText = styled(Typography)({
+  fontSize: 14,
+  fontWeight: 500,
+  color: '#004C6F',
+  lineHeight: '24px',
+});
+
+const ScrollableContent = styled(Box)({
+  flex: 1,
+  overflowY: 'auto',
+  display: 'flex',
+  flexDirection: 'column',
+  minHeight: 0,
+});
+
+const Content = styled(Box)({
+  padding: '24px',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 24,
+});
+
+const PatientInfoSection = styled(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 16,
+});
+
+const Avatar = styled(Box)({
+  width: 40,
+  height: 40,
+  borderRadius: '50%',
+  backgroundColor: '#024C6F',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+});
+
+const AvatarText = styled(Typography)({
+  fontSize: 14,
+  fontWeight: 500,
+  color: '#FCFCFD',
+});
+
+const PatientName = styled(Typography)({
+  fontSize: 16,
+  fontWeight: 600,
+  color: '#364152',
+});
+
+const BadgesContainer = styled(Box)({
+  display: 'flex',
+  gap: 4,
+  flexWrap: 'wrap',
+});
+
+const StatusBadge = styled(Box)<{ color: string; bgColor: string }>(({ color, bgColor }) => ({
+  height: 24,
+  padding: '4px 8px',
+  borderRadius: 9999,
+  backgroundColor: bgColor,
+  display: 'flex',
+  alignItems: 'center',
+  gap: 4,
+}));
+
+const BadgeText = styled(Typography)<{ color: string }>(({ color }) => ({
+  fontSize: 12,
+  fontWeight: 500,
+  color: color,
+  lineHeight: '16px',
+}));
+
+const InfoGrid = styled(Box)({
+  display: 'grid',
+  gridTemplateColumns: 'repeat(2, 1fr)',
+  gap: '16px 24px',
+});
+
+const InfoItem = styled(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 4,
+});
+
+const InfoLabel = styled(Typography)({
+  fontSize: 12,
+  color: '#697586',
+  fontWeight: 400,
+});
+
+const InfoValue = styled(Typography)({
+  fontSize: 14,
+  color: '#364152',
+  fontWeight: 400,
+});
+
+const ExpandableSection = styled(Box)({
+  borderRadius: 12,
+  border: '1px solid #E5E7EB',
+  overflow: 'hidden',
+});
+
+const ExpandableHeader = styled(Box)({
+  padding: '12px 16px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  cursor: 'pointer',
+  '&:hover': {
+    backgroundColor: '#F1F5F9',
+  },
+});
+
+const ExpandableContent = styled(Box)({
+  padding: '16px',
+  borderTop: '1px solid #E5E7EB',
+});
+
+const Footer = styled(Box)({
+  padding: '24px',
+  backgroundColor: '#F8FAFC',
+  borderTop: '1px solid #E5E7EB',
+  display: 'flex',
+  gap: 8,
+  boxShadow: '0px -1px 2px 0px rgba(0, 0, 0, 0.12), 0px 0px 2px 0px rgba(0, 0, 0, 0.12)',
+});
+
+const SecondaryButton = styled(Button)({
+  flex: 1,
+  height: 44,
+  color: '#004C6F',
+  backgroundColor: '#F2F6F8',
+  borderRadius: 8,
+  textTransform: 'none',
+  fontSize: 14,
+  fontWeight: 500,
+  '&:hover': {
+    backgroundColor: '#E5EEF2',
+  },
+});
+
+const PrimaryButton = styled(Button)({
+  flex: 1,
+  height: 44,
+  color: '#FCFCFD',
+  backgroundColor: '#004C6F',
+  borderRadius: 8,
+  textTransform: 'none',
+  fontSize: 14,
+  fontWeight: 500,
+  boxShadow: '0px 1px 2px 0px rgba(0, 0, 0, 0.12)',
+  '&:hover': {
+    backgroundColor: '#003B56',
+  },
+});
+
+const ListItem = styled(Box)({
+  padding: '8px 0',
+  display: 'flex',
+  alignItems: 'flex-start',
+  gap: 8,
+});
+
+const ListItemIcon = styled(Box)({
+  width: 6,
+  height: 6,
+  borderRadius: '50%',
+  backgroundColor: '#697586',
+  marginTop: 8,
+  flexShrink: 0,
+});
+
+const ListItemText = styled(Typography)({
+  fontSize: 14,
+  color: '#364152',
+  lineHeight: '24px',
+});
+
+const ActionItemsList = styled(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+});
+
+const FavoriteNotesList = styled(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+});
+
+const POSSIBLE_ACTION_ITEMS = [
+  'Call patient to confirm upcoming appointment',
+  'Follow up on payment issues (declined card)',
+  'Contact patient about expired membership',
+  'Schedule follow-up consultation',
+  'Review recent lab results',
+  'Update insurance information',
+  'Send appointment reminder',
+  'Check medication refill status',
+  'Coordinate with specialist for referral',
+  'Review treatment plan progress',
+  'Schedule annual wellness check',
+  'Update emergency contact information',
+  'Follow up on missed appointment',
+  'Verify current medications list',
+  'Schedule physical therapy session'
+];
+
+const POSSIBLE_FAVORITE_NOTES = [
+  'Allergic to latex',
+  'Pregnant - Due Date: July 2024',
+  'Card Expired – Patient Notified',
+  'DO NOT LEAVE Voicemails',
+  'Prefers afternoon appointments',
+  'Requires wheelchair assistance',
+  'Hearing impaired - needs written instructions',
+  'Prefers female practitioners only',
+  'Language barrier - needs interpreter',
+  'History of anxiety during procedures',
+  'Sensitive to bright lights',
+  'Prefers email communication',
+  'Regular blood pressure monitoring needed',
+  'Family history of diabetes',
+  'Previous adverse reaction to anesthesia'
+];
+
+const getRandomItems = (array: string[], count: number): string[] => {
+  const shuffled = [...array].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, count);
+};
+
+const getStatusColors = (label: StatusBadgeType): { color: string; bgColor: string } => {
+  switch (label) {
+    case 'New':
+      return { color: '#008D3E', bgColor: '#E2FFE9' };
+    case 'Special':
+      return { color: '#6941C6', bgColor: '#F4F3FF' };
+    case 'Forms':
+      return { color: '#026AA2', bgColor: '#E0F2FE' };
+    case 'Pay':
+      return { color: '#B54708', bgColor: '#FEF6EE' };
+    case 'Notes':
+      return { color: '#175CD3', bgColor: '#EEF4FF' };
+    default:
+      return { color: '#364152', bgColor: '#EEF2F6' };
+  }
+};
+
+interface PatientDetailsDrawerProps {
+  open: boolean;
+  patient: Patient | null;
+  onClose: () => void;
+  onViewProfile: () => void;
+  onCheckout: () => void;
+}
+
+const PatientDetailsDrawer: React.FC<PatientDetailsDrawerProps> = ({
+  open,
+  patient,
+  onClose,
+  onViewProfile,
+  onCheckout,
+}) => {
+  const [actionItemsExpanded, setActionItemsExpanded] = React.useState(false);
+  const [favoriteNotesExpanded, setFavoriteNotesExpanded] = React.useState(false);
+  const { setActiveTab } = useNavigation();
+
+  // Generate random items based on patient ID to maintain consistency
+  const actionItems = React.useMemo(() => 
+    getRandomItems(POSSIBLE_ACTION_ITEMS, 4),
+    [patient?.id] // Re-generate when patient changes
+  );
+
+  const favoriteNotes = React.useMemo(() => 
+    getRandomItems(POSSIBLE_FAVORITE_NOTES, 5),
+    [patient?.id] // Re-generate when patient changes
+  );
+
+  const handleViewProfile = () => {
+    setActiveTab('patients');
+    onViewProfile();
+  };
+
+  if (!patient) return null;
+
+  return (
+    <DrawerContainer>
+      <Slide 
+        direction="right" 
+        in={open} 
+        mountOnEnter 
+        unmountOnExit
+        timeout={{
+          enter: 300,
+          exit: 200,
+        }}
+      >
+        <DrawerWrapper>
+          <Header>
+            <BackButton onClick={onClose}>
+              <ChevronLeftIcon sx={{ color: '#364152', width: 20, height: 20 }} />
+              <BackText>Back</BackText>
+            </BackButton>
+          </Header>
+
+          <ScrollableContent>
+            <Content>
+              <PatientInfoSection>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Avatar>
+                    <AvatarText>{patient.initials}</AvatarText>
+                  </Avatar>
+                  <PatientName>{patient.name}</PatientName>
+                </Box>
+
+                <BadgesContainer>
+                  {patient.statusBadges.map((badge, index) => {
+                    const colors = getStatusColors(badge.type);
+                    return (
+                      <StatusBadge key={index} color={colors.color} bgColor={colors.bgColor}>
+                        <BadgeText color={colors.color}>{badge.type}</BadgeText>
+                      </StatusBadge>
+                    );
+                  })}
+                </BadgesContainer>
+
+                <InfoGrid>
+                  <InfoItem>
+                    <InfoLabel>Date of Birth</InfoLabel>
+                    <InfoValue>{patient.details.dateOfBirth || 'Not specified'}</InfoValue>
+                  </InfoItem>
+                  <InfoItem>
+                    <InfoLabel>Phone Number</InfoLabel>
+                    <InfoValue>{patient.details.phoneNumber || 'Not specified'}</InfoValue>
+                  </InfoItem>
+                  <InfoItem>
+                    <InfoLabel>Home Clinic</InfoLabel>
+                    <InfoValue>{patient.details.homeClinic || 'Not specified'}</InfoValue>
+                  </InfoItem>
+                  <InfoItem>
+                    <InfoLabel>Plan Type</InfoLabel>
+                    <InfoValue>{patient.details.planType}</InfoValue>
+                  </InfoItem>
+                  <InfoItem>
+                    <InfoLabel>Cycle Date</InfoLabel>
+                    <InfoValue>{patient.details.cycleDate}</InfoValue>
+                  </InfoItem>
+                  <InfoItem>
+                    <InfoLabel>Visits Remaining</InfoLabel>
+                    <InfoValue>{patient.details.visitsLeft || 'Not specified'}</InfoValue>
+                  </InfoItem>
+                  <InfoItem>
+                    <InfoLabel>Care Cards</InfoLabel>
+                    <InfoValue>{patient.details.careCards || '0'}</InfoValue>
+                  </InfoItem>
+                  <InfoItem>
+                    <InfoLabel>DC Preference</InfoLabel>
+                    <InfoValue>{patient.details.dcPreference}</InfoValue>
+                  </InfoItem>
+                </InfoGrid>
+              </PatientInfoSection>
+
+              <ExpandableSection>
+                <ExpandableHeader onClick={() => setActionItemsExpanded(!actionItemsExpanded)}>
+                  <Typography variant="subtitle2" color="#364152">
+                    Action Items
+                  </Typography>
+                  <IconButton
+                    size="small"
+                    sx={{
+                      transform: actionItemsExpanded ? 'rotate(180deg)' : 'none',
+                      transition: 'transform 0.2s',
+                    }}
+                  >
+                    <ExpandMoreIcon />
+                  </IconButton>
+                </ExpandableHeader>
+                <Collapse in={actionItemsExpanded}>
+                  <ExpandableContent>
+                    <ActionItemsList>
+                      {actionItems.map((item, index) => (
+                        <ListItem key={index}>
+                          <ListItemIcon />
+                          <ListItemText>{item}</ListItemText>
+                        </ListItem>
+                      ))}
+                    </ActionItemsList>
+                  </ExpandableContent>
+                </Collapse>
+              </ExpandableSection>
+
+              <ExpandableSection>
+                <ExpandableHeader onClick={() => setFavoriteNotesExpanded(!favoriteNotesExpanded)}>
+                  <Typography variant="subtitle2" color="#364152">
+                    Favorite Notes
+                  </Typography>
+                  <IconButton
+                    size="small"
+                    sx={{
+                      transform: favoriteNotesExpanded ? 'rotate(180deg)' : 'none',
+                      transition: 'transform 0.2s',
+                    }}
+                  >
+                    <ExpandMoreIcon />
+                  </IconButton>
+                </ExpandableHeader>
+                <Collapse in={favoriteNotesExpanded}>
+                  <ExpandableContent>
+                    <FavoriteNotesList>
+                      {favoriteNotes.map((note, index) => (
+                        <ListItem key={index}>
+                          <ListItemIcon />
+                          <ListItemText>{note}</ListItemText>
+                        </ListItem>
+                      ))}
+                    </FavoriteNotesList>
+                  </ExpandableContent>
+                </Collapse>
+              </ExpandableSection>
+            </Content>
+          </ScrollableContent>
+
+          <Footer>
+            <SecondaryButton onClick={handleViewProfile}>
+              View patient details
+            </SecondaryButton>
+            <PrimaryButton onClick={onCheckout}>
+              Checkout
+            </PrimaryButton>
+          </Footer>
+        </DrawerWrapper>
+      </Slide>
+    </DrawerContainer>
+  );
+};
+
+export default PatientDetailsDrawer; 

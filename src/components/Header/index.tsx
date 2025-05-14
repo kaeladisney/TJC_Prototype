@@ -1,76 +1,56 @@
 import React from 'react';
 import { 
-  AppBar, 
-  Toolbar, 
   Box, 
-  InputBase, 
   IconButton, 
   Typography,
   styled,
-  alpha,
   Button
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Logo from '../icons/Logo';
 import NotificationsIcon from '../icons/Notifications';
 import GetFeedbackIcon from '../icons/GetFeedback';
 import ProfileImage from '../icons/ProfileImage';
 import AddIcon from '../icons/Add';
-import { margin } from '@mui/system';
+import { SearchInput } from '../SearchInput';
+import { Patient } from '../../types/patient';
+import { useLeftPaneContext } from '../LeftPane/LeftPaneContext';
 
-const StyledAppBar = styled(AppBar)(({ theme }) => ({
-  backgroundColor: '#FFFFFF',
-  boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.12), 0px 0px 2px rgba(0, 0, 0, 0.12)',
+const HeaderWrapper = styled(Box)({
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  right: 0,
   height: 76,
-  justifyContent: 'center'
-}));
-
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: 100,
-  backgroundColor: alpha('#F6F6FA', 1),
-  width: 730,
-  height: 44,
+  backgroundColor: '#FFFFFF',
+  zIndex: 1000,
   display: 'flex',
   alignItems: 'center',
-  padding: '0 6px'
-}));
-
-const SearchField = styled(InputBase)(({ theme }) => ({
-  width: 170,
-  height: 30,
-  '& .MuiInputBase-input': {
-    color: '#777779',
-    padding: '4px 8px',
-    fontSize: '14px',
-    '&::placeholder': {
-      color: '#777779',
-      opacity: 1,
-    },
-  },
-}));
-
-const Divider = styled('div')({
-  width: 2,
-  height: 20,
-  backgroundColor: '#E2E2E6',
-  margin: '0 0'
+  padding: '0 24px',
 });
 
-const SearchButton = styled(IconButton)(({ theme }) => ({
-  backgroundColor: '#004C6F',
-  width: 32,
+const LogoSection = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '8px',
+});
+
+const OrganizationSection = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
+  backgroundColor: '#F6F6FA',
+  borderRadius: '8px',
+  padding: '10px',
+  gap: '4px',
+  marginLeft: '8px',
+});
+
+const Divider = styled(Box)({
+  width: 1,
   height: 32,
-  marginLeft: 'auto',
-  '&:hover': {
-    backgroundColor: '#003B56',
-  },
-  '& .MuiSvgIcon-root': {
-    color: '#FFFFFF',
-    fontSize: 22
-  }
-}));
+  backgroundColor: '#E5E7EB',
+  margin: '0 32px',
+});
 
 const AddPatientButton = styled(Button)(({ theme }) => ({
   backgroundColor: '#FFFFFF',
@@ -91,16 +71,8 @@ const AddPatientButton = styled(Button)(({ theme }) => ({
     color: '#282829',
     fontSize: 14,
     fontWeight: 400
-
   }
 }));
-
-const VerticalDivider = styled('div')({
-  width: 1,
-  height: 33,
-  backgroundColor: '#D9D9D9',
-  margin: '0 8px'
-});
 
 const IconButtonContainer = styled(Box)({
   display: 'flex',
@@ -115,96 +87,51 @@ const IconButtonContainer = styled(Box)({
   }
 });
 
-const UserAvatar = styled('div')({
-  width: 24,
-  height: 24,
-  borderRadius: '50%',
-  backgroundColor: '#00BEE3',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  position: 'relative',
-  '&::after': {
-    content: '""',
-    position: 'absolute',
-    width: 8,
-    height: 2,
-    backgroundColor: '#282829',
-    bottom: 4,
-    left: '50%',
-    transform: 'translateX(-50%)'
-  },
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    width: 2,
-    height: 8,
-    backgroundColor: '#282829',
-    bottom: 1,
-    left: '50%',
-    transform: 'translateX(-50%)'
-  }
-});
-
 const Header: React.FC = () => {
+  const { addPatientToQueue } = useLeftPaneContext();
+
+  const handleAddToQueue = (patient: Patient) => {
+    addPatientToQueue?.(patient);
+  };
+
   return (
-    <StyledAppBar position="fixed">
-      <Toolbar sx={{ justifyContent: 'space-between', height: '100%' }}>
-        {/* Logo and Organization Section */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Logo width={20} height={26} />
-          <Typography sx={{ color: '#282829', mx: 0.5 }}>ALIGN</Typography>
-          <Box sx={{ width: 2, height: 24, bgcolor: '#E2E2E6', mx: 1 }} />
-          <Box sx={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            bgcolor: '#F6F6FA', 
-            borderRadius: 2,
-            p: '10px',
-            gap: 1
-          }}>
-            <Typography sx={{ color: '#282829' }}>Gotham Clinic</Typography>
-            <KeyboardArrowDownIcon sx={{ color: '#282829' }} />
-          </Box>
+    <HeaderWrapper>
+      <LogoSection>
+        <Logo />
+        <Typography sx={{ color: '#282829', fontWeight: 500 }}>ALIGN</Typography>
+        <Box sx={{ width: 2, height: 24, bgcolor: '#E2E2E6', mx: 1 }} />
+        <OrganizationSection>
+          <Typography sx={{ color: '#282829' }}>Gotham Clinic</Typography>
+          <KeyboardArrowDownIcon sx={{ color: '#282829' }} />
+        </OrganizationSection>
+      </LogoSection>
+      <Box sx={{ 
+        position: 'absolute',
+        left: '50%',
+        transform: 'translateX(-50%)',
+      }}>
+        <SearchInput onAddToQueue={handleAddToQueue} />
+      </Box>
+      <Box sx={{ flex: 1 }} />
+      <AddPatientButton>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <AddIcon />
+          <Typography>Create Patient</Typography>
         </Box>
-
-        {/* Search Bar */}
-        <Search>
-          <SearchField placeholder="First Name" />
-          <Divider />
-          <SearchField placeholder="Last Name" />
-          <Divider />
-          <SearchField placeholder="Date of Birth" />
-          <Divider />
-          <SearchField placeholder="Phone Number" />
-          <SearchButton>
-            <SearchIcon />
-          </SearchButton>
-        </Search>
-
-        {/* User Controls */}
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <AddPatientButton>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <AddIcon />
-              <Typography>Create Patient</Typography>
-            </Box>
-          </AddPatientButton>
-          <VerticalDivider />
-          <IconButtonContainer>
-            <IconButton>
-              <NotificationsIcon />
-            </IconButton>
-            <IconButton>
-              <GetFeedbackIcon />
-            </IconButton>
-            <IconButton>
-              <ProfileImage />
-            </IconButton>
-          </IconButtonContainer>
-        </Box>
-      </Toolbar>
-    </StyledAppBar>
+      </AddPatientButton>
+      <Divider sx={{marginRight: '16px'}} />
+      <IconButtonContainer>
+        <IconButton>
+          <NotificationsIcon />
+        </IconButton>
+        <IconButton>
+          <GetFeedbackIcon />
+        </IconButton>
+        <IconButton>
+          <ProfileImage />
+        </IconButton>
+      </IconButtonContainer>
+    </HeaderWrapper>
   );
 };
 

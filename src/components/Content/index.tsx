@@ -1,18 +1,27 @@
 import React from 'react';
 import { Box, Typography, styled } from '@mui/material';
 import { useLeftPaneContext } from '../LeftPane/LeftPaneContext';
+import { useNavigation } from '../../context/NavigationContext';
+import Home from '../Home';
+import Patients from '../Patients';
 
-const ContentWrapper = styled(Box)<{ isLeftPaneCollapsed: boolean }>(({ isLeftPaneCollapsed }) => ({
-  backgroundColor: '#FFFFFF',
-  width: 'auto',
-  flexGrow: 1,
-  height: 'calc(100vh - 76px)', // Subtract main header height
-  boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.12), 0px 0px 2px rgba(0, 0, 0, 0.12)',
+const ContentWrapper = styled(Box)({
+  height: '100%',
   display: 'flex',
   flexDirection: 'column',
-  marginLeft: isLeftPaneCollapsed ? 88 : 450,
-  transition: 'margin-left 0.3s ease-in-out',
-}));
+  backgroundColor: '#FFFFFF',
+});
+
+const TabsWrapper = styled(Box)({
+  backgroundColor: '#FFFFFF',
+  borderBottom: '1px solid #E5E7EB',
+  flex: 'none',
+});
+
+const ContentArea = styled(Box)({
+  flex: 1,
+  overflowY: 'auto',
+});
 
 const NavigationBar = styled(Box)({
   width: '100%',
@@ -68,42 +77,72 @@ const NotificationBadge = styled(Box)({
   justifyContent: 'center',
 });
 
+interface NavItemData {
+  id: string;
+  label: string;
+  notifications?: number;
+}
+
+const navItems: NavItemData[] = [
+  { id: 'home', label: 'Home' },
+  { id: 'tasks', label: 'Tasks', notifications: 2 },
+  { id: 'leads', label: 'Leads', notifications: 24 },
+  { id: 'messages', label: 'Messages', notifications: 5 },
+  { id: 'calendar', label: 'Calendar' },
+  { id: 'patients', label: 'Patients' },
+  { id: 'reports', label: 'Reports' },
+];
+
 const Content: React.FC = () => {
   const { isCollapsed } = useLeftPaneContext();
+  const { activeTab, setActiveTab } = useNavigation();
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'home':
+        return <Home />;
+      case 'patients':
+        return <Patients />;
+      default:
+        return (
+          <Box sx={{ p: 4 }}>
+            <Typography variant="h5">
+              {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Page
+            </Typography>
+            <Typography variant="body1" sx={{ mt: 2 }}>
+              This page is under construction.
+            </Typography>
+          </Box>
+        );
+    }
+  };
 
   return (
-    <ContentWrapper isLeftPaneCollapsed={isCollapsed}>
-      <NavigationBar>
-        <Box sx={{ display: 'flex', gap: 0.5 }}>
-          <NavItem active>
-            <NavText active>Home</NavText>
-          </NavItem>
-          <NavItem>
-            <NavText>Tasks</NavText>
-            <NotificationBadge>2</NotificationBadge>
-          </NavItem>
-          <NavItem>
-            <NavText>Leads</NavText>
-            <NotificationBadge>24</NotificationBadge>
-          </NavItem>
-          <NavItem>
-            <NavText>Messages</NavText>
-            <NotificationBadge>5</NotificationBadge>
-          </NavItem>
-          <NavItem>
-            <NavText>Calendar</NavText>
-          </NavItem>
-          <NavItem>
-            <NavText>Patients</NavText>
-          </NavItem>
-          <NavItem>
-            <NavText>Reports</NavText>
-          </NavItem>
-        </Box>
-      </NavigationBar>
-      <ScrollableContent>
-        {/* Content will be added here */}
-      </ScrollableContent>
+    <ContentWrapper>
+      <TabsWrapper>
+        {/* Your tabs component here */}
+      </TabsWrapper>
+      <ContentArea>
+        <NavigationBar>
+          <Box sx={{ display: 'flex', gap: 0.5 }}>
+            {navItems.map((item) => (
+              <NavItem
+                key={item.id}
+                active={activeTab === item.id}
+                onClick={() => setActiveTab(item.id as any)}
+              >
+                <NavText active={activeTab === item.id}>{item.label}</NavText>
+                {item.notifications && (
+                  <NotificationBadge>{item.notifications}</NotificationBadge>
+                )}
+              </NavItem>
+            ))}
+          </Box>
+        </NavigationBar>
+        <ScrollableContent>
+          {renderContent()}
+        </ScrollableContent>
+      </ContentArea>
     </ContentWrapper>
   );
 };
