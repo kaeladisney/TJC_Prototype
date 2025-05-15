@@ -38,7 +38,7 @@ interface PasswordScreenProps {
 
 const PasswordScreen: React.FC<PasswordScreenProps> = ({ 
   onPasswordCorrect,
-  correctPassword = 'TJC25' // Default password
+  correctPassword = 'TJC2024' // Updated password
 }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
