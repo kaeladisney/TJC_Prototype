@@ -96,7 +96,7 @@ const Header: React.FC = () => {
   return (
     <HeaderWrapper>
       <LogoSection>
-        <Typography sx={{ color: '#282829', fontWeight: 500 }}>ALIGN</Typography>
+        <Typography sx={{ color: '#282829', fontWeight: 500 }}>Frontoffice</Typography>
         <Box sx={{ width: 2, height: 24, bgcolor: '#E2E2E6', mx: 1 }} />
         <OrganizationSection>
           <Typography sx={{ color: '#282829' }}>Gotham Clinic</Typography>
