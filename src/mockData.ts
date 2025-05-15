@@ -10,8 +10,7 @@ export const mockPatients: Patient[] = [
     name: 'Christopher Anderson',
     initials: 'CA',
     statusBadges: [
-      { type: 'New', label: 'New' },
-      { type: 'Forms', label: 'Forms' }
+      { type: 'New', label: 'New' }
     ],
     details: {
       dcPreference: 'Dr. Sarah Miller, D.C.',
@@ -48,8 +47,7 @@ export const mockPatients: Patient[] = [
     name: 'Christina Martinez',
     initials: 'CM',
     statusBadges: [
-      { type: 'Pay', label: 'Pay' },
-      { type: 'Forms', label: 'Forms' }
+      { type: 'Pay', label: 'Pay' }
     ],
     details: {
       dcPreference: 'Dr. James Wilson, D.C.',
@@ -86,8 +84,8 @@ export const mockPatients: Patient[] = [
     name: 'Michael Chang',
     initials: 'MC',
     statusBadges: [
-      { type: 'Forms', label: 'Forms Pending' },
-      { type: 'Pay', label: 'Payment Required' }
+      { type: 'Pay', label: 'Payment Required' },
+      { type: 'Exam', label: 'Exam Required' }
     ],
     details: {
       dcPreference: 'Dr. Sarah Miller, D.C.',
@@ -124,7 +122,7 @@ export const mockPatients: Patient[] = [
     statusBadges: [
       { type: 'New', label: 'New Patient' },
       { type: 'Pay', label: 'Payment Required' },
-      { type: 'Forms', label: 'Forms Pending' }
+      { type: 'Exam', label: 'Exam Required' }
     ],
     details: {
       dcPreference: 'Dr. James Wilson, D.C.',
@@ -159,7 +157,6 @@ export const mockPatients: Patient[] = [
     name: 'Robert Martinez',
     initials: 'RM',
     statusBadges: [
-      { type: 'Forms', label: 'Forms Complete' },
       { type: 'Pay', label: 'Payment Required' }
     ],
     details: {
@@ -195,8 +192,7 @@ export const mockPatients: Patient[] = [
     name: 'Lisa Thompson',
     initials: 'LT',
     statusBadges: [
-      { type: 'New', label: 'New Patient' },
-      { type: 'Forms', label: 'Forms Pending' }
+      { type: 'New', label: 'New Patient' }
     ],
     details: {
       dcPreference: 'Dr. Will Murillo, D.C.',
@@ -335,13 +331,11 @@ export const mockAppointments: Appointment[] = [
       statuses: [
         {
           type: 'New',
-          color: '#008D3E',
-          bgColor: '#E2FFE9',
+          ...STATUS_COLORS.New
         },
         {
           type: 'Forms',
-          color: '#026AA2',
-          bgColor: '#E0F2FE',
+          ...STATUS_COLORS.Forms
         }
       ],
       phone: '(555) 123-4567',
@@ -358,13 +352,11 @@ export const mockAppointments: Appointment[] = [
       statuses: [
         {
           type: 'Forms',
-          color: '#026AA2',
-          bgColor: '#E0F2FE',
+          ...STATUS_COLORS.Forms
         },
         {
           type: 'Pay',
-          color: '#B54708',
-          bgColor: '#FEF6EE',
+          ...STATUS_COLORS.Pay
         }
       ],
       phone: '(555) 987-6543',
