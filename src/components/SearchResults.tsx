@@ -140,6 +140,7 @@ const AddButton = styled(Button)({
 interface SearchResultsProps {
   results: Patient[];
   onAddToQueue: (patient: Patient) => void;
+  onClose: () => void;
 }
 
 const getStatusColor = (type: StatusBadgeType): string => {
@@ -156,7 +157,7 @@ const getStatusLabel = (type: StatusBadgeType): string => {
   return type;
 };
 
-export const SearchResults: React.FC<SearchResultsProps> = ({ results, onAddToQueue }) => {
+export const SearchResults: React.FC<SearchResultsProps> = ({ results, onAddToQueue, onClose }) => {
   const { navigateToPatientDetails } = useNavigation();
 
   const truncateText = (text: string, maxLength: number) => {
@@ -182,6 +183,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ results, onAddToQu
   const handlePatientClick = (patient: Patient, event: React.MouseEvent) => {
     event.stopPropagation();
     navigateToPatientDetails(patient.id);
+    onClose();
   };
 
   return (

@@ -101,6 +101,12 @@ export const SearchInput: React.FC<SearchInputProps> = ({ onAddToQueue }) => {
     setFocused(false);
   };
 
+  const handleClose = () => {
+    setSearchTerm('');
+    setSearchResults([]);
+    setFocused(false);
+  };
+
   return (
     <Box ref={searchRef} sx={{ position: 'relative' }}>
       <Search className={focused ? 'focused' : ''}>
@@ -119,6 +125,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({ onAddToQueue }) => {
         <SearchResults
           results={searchResults}
           onAddToQueue={handleAddToQueue}
+          onClose={handleClose}
         />
       )}
     </Box>
