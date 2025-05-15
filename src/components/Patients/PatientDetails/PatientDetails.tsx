@@ -626,7 +626,7 @@ const PatientDetails: React.FC = () => {
         {selectedTab === 2 && <PatientHistory patientId={selectedPatientId || ''} />}
         {selectedTab === 3 && <Documents patientId={selectedPatientId || ''} />}
         {selectedTab === 4 && <Box>Messages content</Box>}
-        {selectedTab === 5 && <Notes patientId={selectedPatientId || ''} />}
+        {selectedTab === 5 && <Notes patientId={selectedPatientId || ''} favoriteNotes={mockFavoriteNotes} />}
         {selectedTab === 6 && <Settings patientId={selectedPatientId || ''} />}
       </ContentContainer>
 

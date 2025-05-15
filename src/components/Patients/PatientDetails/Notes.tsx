@@ -187,11 +187,24 @@ const mockNotes: Note[] = [
 
 interface NotesProps {
   patientId: string;
+  favoriteNotes?: string[];
 }
 
-export const Notes: React.FC<NotesProps> = ({ patientId }) => {
+export const Notes: React.FC<NotesProps> = ({ patientId, favoriteNotes = [] }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [notes, setNotes] = useState(mockNotes);
+  const [notes, setNotes] = useState(() => {
+    // Convert favorite notes into the Note format and combine with mock notes
+    const favoriteNotesData: Note[] = favoriteNotes.map((note, index) => ({
+      id: `favorite-${index}`,
+      title: note,
+      preview: note,
+      category: 'Patient Experience',
+      lastModified: '4/17/2024',
+      clinic: 'Gotham',
+      favorite: true,
+    }));
+    return [...favoriteNotesData, ...mockNotes];
+  });
 
   const toggleFavorite = (noteId: string) => {
     setNotes(notes.map(note => 
