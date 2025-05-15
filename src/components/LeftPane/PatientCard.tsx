@@ -239,11 +239,14 @@ const PatientCard: React.FC<PatientCardProps> = ({
     setMenuAnchor(null);
   };
 
-  // Filter out 'Forms' status badges and then take the first 2
-  const filteredStatuses = statuses.filter(status => status.label !== 'Forms');
-  const displayedStatuses = filteredStatuses.slice(0, 2);
-  const remainingStatuses = filteredStatuses.slice(2);
-  const remainingCount = remainingStatuses.length;
+  // Take first 2 statuses but don't display Forms badges
+  const displayedStatuses = statuses
+    .filter(status => status.label !== 'Forms')
+    .slice(0, 2);
+  const remainingCount = statuses
+    .filter(status => status.label !== 'Forms')
+    .slice(2)
+    .length;
 
   return (
     <CardWrapper 
