@@ -272,27 +272,40 @@ const POSSIBLE_ACTION_ITEMS = [
   'Schedule physical therapy session'
 ];
 
-const POSSIBLE_FAVORITE_NOTES = [
-  'Allergic to latex',
-  'Pregnant - Due Date: July 2024',
-  'Card Expired – Patient Notified',
-  'DO NOT LEAVE Voicemails',
-  'Prefers afternoon appointments',
-  'Requires wheelchair assistance',
-  'Hearing impaired - needs written instructions',
-  'Prefers female practitioners only',
-  'Language barrier - needs interpreter',
-  'History of anxiety during procedures',
-  'Sensitive to bright lights',
-  'Prefers email communication',
-  'Regular blood pressure monitoring needed',
-  'Family history of diabetes',
-  'Previous adverse reaction to anesthesia'
-];
-
 const getRandomItems = (array: string[], count: number): string[] => {
   const shuffled = [...array].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, count);
+};
+
+const getNumberFromString = (str: string, mod: number): number => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash = hash & hash;
+  }
+  return Math.abs(hash) % mod;
+};
+
+const generateFavoriteNotes = (patientId: string): string[] => {
+  const notes: string[] = [];
+  
+  if (getNumberFromString(patientId + '1', 2) === 0) {
+    notes.push('Allergic to aloe');
+  }
+  if (getNumberFromString(patientId + '2', 2) === 0) {
+    notes.push('Pregnant');
+  }
+  if (getNumberFromString(patientId + '3', 2) === 0) {
+    notes.push('Prefers morning appointments');
+  }
+  if (getNumberFromString(patientId + '4', 2) === 0) {
+    notes.push('Service dog present');
+  }
+  if (getNumberFromString(patientId + '5', 2) === 0) {
+    notes.push('Requires wheelchair access');
+  }
+
+  return notes;
 };
 
 const getStatusColors = (label: StatusBadgeType): { color: string; bgColor: string } => {
@@ -326,7 +339,7 @@ const PatientDetailsDrawer: React.FC<PatientDetailsDrawerProps> = ({
   );
 
   const favoriteNotes = React.useMemo(() => 
-    getRandomItems(POSSIBLE_FAVORITE_NOTES, 5),
+    generateFavoriteNotes(patient?.id || ''),
     [patient?.id] // Re-generate when patient changes
   );
 

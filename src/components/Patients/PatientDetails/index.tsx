@@ -91,8 +91,35 @@ const generateMockPlanData = (name: string, id: string) => {
   };
 };
 
-const generateFavoriteNotes = (name: string, id: string) => {
-  return ['Initial consultation notes', 'Follow-up visit notes'];
+const getNumberFromString = (str: string, mod: number): number => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash = hash & hash;
+  }
+  return Math.abs(hash) % mod;
+};
+
+const generateFavoriteNotes = (patientId: string): string[] => {
+  const notes: string[] = [];
+  
+  if (getNumberFromString(patientId + '1', 2) === 0) {
+    notes.push('Allergic to aloe');
+  }
+  if (getNumberFromString(patientId + '2', 2) === 0) {
+    notes.push('Pregnant');
+  }
+  if (getNumberFromString(patientId + '3', 2) === 0) {
+    notes.push('Prefers morning appointments');
+  }
+  if (getNumberFromString(patientId + '4', 2) === 0) {
+    notes.push('Service dog present');
+  }
+  if (getNumberFromString(patientId + '5', 2) === 0) {
+    notes.push('Requires wheelchair access');
+  }
+
+  return notes;
 };
 
 const generateMockActivities = (name: string, id: string) => {
@@ -146,7 +173,7 @@ const PatientDetails: React.FC = () => {
     ? generateMockPlanData(selectedPatient.name, selectedPatient.id)
     : null;
 
-  const mockFavoriteNotes = generateFavoriteNotes(selectedPatient?.name || '', selectedPatient?.id || '');
+  const mockFavoriteNotes = generateFavoriteNotes(selectedPatient?.id || '');
   const mockActivities = generateMockActivities(selectedPatient?.name || '', selectedPatient?.id || '');
   const mockHistoryData = generateMockHistoryData(selectedPatient?.id || '');
 
