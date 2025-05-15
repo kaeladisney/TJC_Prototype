@@ -284,8 +284,10 @@ const PatientCardExpanded: React.FC<PatientCardExpandedProps> = ({
     }
   };
 
-  const displayedStatuses = statuses.slice(0, 2);
-  const remainingStatuses = statuses.slice(2);
+  // Filter out 'Forms' status badges and then take the first 2
+  const filteredStatuses = statuses.filter(status => status.label !== 'Forms');
+  const displayedStatuses = filteredStatuses.slice(0, 2);
+  const remainingStatuses = filteredStatuses.slice(2);
   const remainingCount = remainingStatuses.length;
 
   return (
