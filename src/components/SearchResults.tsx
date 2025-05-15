@@ -3,6 +3,7 @@ import { Box, Typography, Button, styled, Tooltip } from '@mui/material';
 import { Patient, StatusBadgeType } from '../types/patient';
 import AddIcon from '@mui/icons-material/Add';
 import { STATUS_COLORS, StatusColorKey } from '../constants/statusColors';
+import { useNavigation } from '../context/NavigationContext';
 
 const ResultsContainer = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -24,8 +25,12 @@ const ResultItem = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'space-between',
   borderBottom: '1px solid #E5E7EB',
+  cursor: 'pointer',
   '&:last-child': {
     borderBottom: 'none',
+  },
+  '&:hover': {
+    backgroundColor: '#F8FAFC',
   },
 }));
 
@@ -152,6 +157,8 @@ const getStatusLabel = (type: StatusBadgeType): string => {
 };
 
 export const SearchResults: React.FC<SearchResultsProps> = ({ results, onAddToQueue }) => {
+  const { navigateToPatientDetails } = useNavigation();
+
   const truncateText = (text: string, maxLength: number) => {
     if (!text) return '';
     if (text.length <= maxLength) return text;
@@ -172,10 +179,15 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ results, onAddToQu
     );
   };
 
+  const handlePatientClick = (patient: Patient, event: React.MouseEvent) => {
+    event.stopPropagation();
+    navigateToPatientDetails(patient.id);
+  };
+
   return (
     <ResultsContainer>
-      {results.map((patient) => (
-        <ResultItem key={patient.id}>
+      {results.map(patient => (
+        <ResultItem key={patient.id} onClick={(e) => handlePatientClick(patient, e)}>
           <PatientInfo>
             <Avatar>
               <AvatarText>{patient.initials}</AvatarText>
@@ -216,7 +228,10 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ results, onAddToQu
             </InfoContainer>
           </PatientInfo>
           <AddButton
-            onClick={() => onAddToQueue(patient)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onAddToQueue(patient);
+            }}
             startIcon={<AddIcon />}
           >
             Add to Queue
