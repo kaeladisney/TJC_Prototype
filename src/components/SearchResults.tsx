@@ -15,7 +15,7 @@ const ResultsContainer = styled(Box)(({ theme }) => ({
   borderRadius: 16,
   marginTop: 4,
   boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.12), 0px 0px 2px rgba(0, 0, 0, 0.12)',
-  zIndex: 1000,
+  zIndex: 1100,
   overflow: 'hidden',
 }));
 
@@ -166,6 +166,18 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ results, onAddToQu
     return `${text.substring(0, maxLength)}...`;
   };
 
+  const formatPhoneNumber = (phone: string | undefined) => {
+    if (!phone) return 'Not specified';
+    // Remove all non-digits
+    const digits = phone.replace(/\D/g, '');
+    // Format as (XXX) XXX-XXXX if 10 digits
+    if (digits.length === 10) {
+      return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+    }
+    // Return as is if not 10 digits
+    return phone;
+  };
+
   const renderDetailValue = (value: string | undefined, maxLength: number) => {
     const displayText = value || 'Not specified';
     const truncatedText = truncateText(displayText, maxLength);
@@ -211,8 +223,8 @@ export const SearchResults: React.FC<SearchResultsProps> = ({ results, onAddToQu
               </BadgesContainer>
               <DetailsGrid>
                 <DetailItem>
-                  <DetailLabel>DC Preference:</DetailLabel>
-                  {renderDetailValue(patient.details?.dcPreference, 15)}
+                  <DetailLabel>Phone:</DetailLabel>
+                  {renderDetailValue(formatPhoneNumber(patient.phone), 15)}
                 </DetailItem>
                 <DetailItem>
                   <DetailLabel>Plan Type:</DetailLabel>

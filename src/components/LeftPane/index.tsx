@@ -12,6 +12,7 @@ import PatientDetailsDrawer from './PatientDetailsDrawer';
 import { Patient, StatusBadgeType } from '../../types/patient';
 import { useNavigation } from '../../context/NavigationContext';
 import { STATUS_COLORS, StatusColorKey } from '../../constants/statusColors';
+import { generateFavoriteNotes } from '../../utils/patientUtils';
 
 const getStatusColor = (type: StatusBadgeType): string => {
   const statusColor = STATUS_COLORS[type as StatusColorKey];
@@ -210,6 +211,12 @@ const LeftPane: React.FC = () => {
   } = useLeftPaneContext();
   const { setActiveTab, setSelectedPatientId } = useNavigation();
 
+  // Get favorite notes for the selected patient
+  const favoriteNotes = React.useMemo(() => {
+    if (!selectedPatient) return [];
+    return generateFavoriteNotes(selectedPatient.name || '', selectedPatient.id || '');
+  }, [selectedPatient]);
+
   // Filter patients by their section status
   const checkedInPatients = patients.filter(patient => patient.details?.section === 'checkedIn');
   const withDoctorPatients = patients.filter(patient => patient.details?.section === 'withDoctor');
@@ -401,6 +408,7 @@ const LeftPane: React.FC = () => {
         patient={selectedPatient}
         onCheckout={handleCheckout}
         onViewProfile={handleViewProfile}
+        favoriteNotes={favoriteNotes}
       />
     </PaneWrapper>
   );

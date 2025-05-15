@@ -319,6 +319,7 @@ interface PatientDetailsDrawerProps {
   onClose: () => void;
   onViewProfile: () => void;
   onCheckout: () => void;
+  favoriteNotes?: string[];
 }
 
 const PatientDetailsDrawer: React.FC<PatientDetailsDrawerProps> = ({
@@ -327,6 +328,7 @@ const PatientDetailsDrawer: React.FC<PatientDetailsDrawerProps> = ({
   onClose,
   onViewProfile,
   onCheckout,
+  favoriteNotes = [],
 }) => {
   const [actionItemsExpanded, setActionItemsExpanded] = React.useState(false);
   const [favoriteNotesExpanded, setFavoriteNotesExpanded] = React.useState(false);
@@ -335,11 +337,6 @@ const PatientDetailsDrawer: React.FC<PatientDetailsDrawerProps> = ({
   // Generate random items based on patient ID to maintain consistency
   const actionItems = React.useMemo(() => 
     getRandomItems(POSSIBLE_ACTION_ITEMS, 4),
-    [patient?.id] // Re-generate when patient changes
-  );
-
-  const favoriteNotes = React.useMemo(() => 
-    generateFavoriteNotes(patient?.id || ''),
     [patient?.id] // Re-generate when patient changes
   );
 

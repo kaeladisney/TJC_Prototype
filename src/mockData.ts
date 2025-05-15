@@ -9,6 +9,7 @@ export const mockPatients: Patient[] = [
     id: '1',
     name: 'Christopher Anderson',
     initials: 'CA',
+    phone: '5551234567',
     statusBadges: [
       { type: 'New', label: 'New' }
     ],
@@ -45,6 +46,7 @@ export const mockPatients: Patient[] = [
     id: '2',
     name: 'Christina Martinez',
     initials: 'CM',
+    phone: '5559876543',
     statusBadges: [
       { type: 'Pay', label: 'Pay' }
     ],
@@ -82,6 +84,7 @@ export const mockPatients: Patient[] = [
     id: '3',
     name: 'Michael Chang',
     initials: 'MC',
+    phone: '5552345678',
     statusBadges: [
       { type: 'Pay', label: 'Payment Required' },
       { type: 'Exam', label: 'Exam Required' }
@@ -118,6 +121,7 @@ export const mockPatients: Patient[] = [
     id: '4',
     name: 'Emily Rodriguez',
     initials: 'ER',
+    phone: '5553456789',
     statusBadges: [
       { type: 'New', label: 'New Patient' },
       { type: 'Pay', label: 'Payment Required' },
@@ -155,6 +159,7 @@ export const mockPatients: Patient[] = [
     id: '5',
     name: 'Robert Martinez',
     initials: 'RM',
+    phone: '5554567890',
     statusBadges: [
       { type: 'Pay', label: 'Payment Required' }
     ],
@@ -190,6 +195,7 @@ export const mockPatients: Patient[] = [
     id: '6',
     name: 'Lisa Thompson',
     initials: 'LT',
+    phone: '5555678901',
     statusBadges: [
       { type: 'New', label: 'New Patient' }
     ],
@@ -293,6 +299,43 @@ export const mockPatients: Patient[] = [
       nextPaymentDate: '2024-04-01',
       visitBalance: 12,
       totalVisits: 12
+    }
+  },
+  {
+    id: '9',
+    name: 'Sarah Johnson',
+    initials: 'SJ',
+    phone: '5557890123',
+    statusBadges: [
+      { type: 'New', label: 'New' }
+    ],
+    details: {
+      planType: 'Initial Visit',
+      cycleDate: '2/15/2024',
+      visitsLeft: '10',
+      homeClinic: 'Downtown',
+      section: 'completed'
+    },
+    personalInfo: {
+      dateOfBirth: '1995-06-20',
+      sex: 'Female',
+      email: 'sarah.johnson@email.com',
+      phone: '(555) 789-0123',
+      address: {
+        street: '987 Cedar Court',
+        city: 'Gotham',
+        state: 'NY',
+        zipCode: '10005'
+      }
+    },
+    planInfo: {
+      productType: 'Initial Consultation',
+      planStatus: 'Pending',
+      cycleDate: '2024-02-15',
+      arbMonthlyAmount: 99.99,
+      nextPaymentDate: '2024-03-15',
+      visitBalance: 1,
+      totalVisits: 1
     }
   }
 ];

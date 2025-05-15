@@ -107,6 +107,7 @@ const Header: React.FC = () => {
         position: 'absolute',
         left: '50%',
         transform: 'translateX(-50%)',
+        zIndex: 1001,
       }}>
         <SearchInput onAddToQueue={handleAddToQueue} />
       </Box>

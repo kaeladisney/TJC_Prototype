@@ -23,6 +23,7 @@ const Search = styled('div')(({ theme }) => ({
     width: '728px',
     borderColor: 'rgb(2, 76, 111)',
     borderWidth: '3px',
+    zIndex: 1001,
   },
 }));
 
@@ -76,16 +77,34 @@ export const SearchInput: React.FC<SearchInputProps> = ({ onAddToQueue }) => {
   }, []);
 
   useEffect(() => {
-    if (searchTerm) {
-      const searchTermLower = searchTerm.toLowerCase();
-      const filteredResults = mockPatients.filter(patient =>
-        patient.name.toLowerCase().includes(searchTermLower) ||
-        (patient.phone && patient.phone.replace(/\D/g, '').includes(searchTerm.replace(/\D/g, '')))
-      );
+    const filterPatients = () => {
+      if (!searchTerm.trim()) {
+        setSearchResults([]);
+        return;
+      }
+
+      const searchTermLower = searchTerm.toLowerCase().trim();
+      const searchTermDigits = searchTerm.replace(/\D/g, '');
+      
+      const filteredResults = mockPatients.filter(patient => {
+        // Check if input looks like a phone number (contains 2 or more digits)
+        const isPhoneSearch = /\d{2,}/.test(searchTerm);
+        
+        if (isPhoneSearch) {
+          // For phone numbers, match from the start of the number
+          const phoneDigits = patient.phone ? patient.phone.replace(/\D/g, '') : '';
+          return phoneDigits.startsWith(searchTermDigits);
+        } else {
+          // For text search, match from the start of the name
+          const nameLower = patient.name.toLowerCase();
+          return nameLower.startsWith(searchTermLower);
+        }
+      });
+
       setSearchResults(filteredResults);
-    } else {
-      setSearchResults([]);
-    }
+    };
+
+    filterPatients();
   }, [searchTerm]);
 
   const handleFocus = () => {
@@ -110,17 +129,18 @@ export const SearchInput: React.FC<SearchInputProps> = ({ onAddToQueue }) => {
   };
 
   return (
-    <Box ref={searchRef} sx={{ position: 'relative' }}>
+    <Box ref={searchRef} sx={{ position: 'relative', zIndex: 1001 }}>
       <Search className={focused ? 'focused' : ''}>
         <SearchIconWrapper>
           <SearchIcon />
         </SearchIconWrapper>
         <StyledInputBase
-          placeholder="Search patients..."
+          placeholder="Search patients by name or phone..."
           inputProps={{ 'aria-label': 'search patients' }}
           onFocus={handleFocus}
           value={searchTerm}
           onChange={handleChange}
+          autoComplete="off"
         />
       </Search>
       {focused && searchResults.length > 0 && (

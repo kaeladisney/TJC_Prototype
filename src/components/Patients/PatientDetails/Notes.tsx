@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, styled, InputAdornment, TextField, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
@@ -151,6 +151,10 @@ const getCategoryStyle = (category: string) => {
       color: '#026AA2',
       backgroundColor: '#E0F2FE',
     },
+    'Favorite Notes': {
+      color: '#F79009',
+      backgroundColor: '#FFFAEB',
+    },
   };
   return styles[category] || styles['Patient Experience'];
 };
@@ -188,17 +192,65 @@ const mockNotes: Note[] = [
 interface NotesProps {
   patientId: string;
   favoriteNotes?: string[];
+  onFavoriteToggle?: (note: string, isFavorite: boolean) => void;
 }
 
-export const Notes: React.FC<NotesProps> = ({ patientId, favoriteNotes = [] }) => {
+export const Notes: React.FC<NotesProps> = ({ patientId, favoriteNotes = [], onFavoriteToggle }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [notes, setNotes] = useState(mockNotes);
+  const [notes, setNotes] = useState(() => {
+    // Convert favorite notes into the Note format
+    const favoriteNotesFormatted: Note[] = favoriteNotes.map((note, index) => ({
+      id: `favorite-${index}`,
+      title: note,
+      preview: note,
+      category: 'Favorite Notes',
+      lastModified: new Date().toLocaleDateString(),
+      clinic: 'All Clinics',
+      favorite: true,
+    }));
+
+    // Combine with existing mock notes
+    return [...favoriteNotesFormatted, ...mockNotes];
+  });
+
+  // Update notes when favoriteNotes prop changes
+  useEffect(() => {
+    setNotes(prevNotes => {
+      const favoriteNotesFormatted: Note[] = favoriteNotes.map((note, index) => ({
+        id: `favorite-${index}`,
+        title: note,
+        preview: note,
+        category: 'Favorite Notes',
+        lastModified: new Date().toLocaleDateString(),
+        clinic: 'All Clinics',
+        favorite: true,
+      }));
+
+      // Keep existing non-favorite notes
+      const nonFavoriteNotes = prevNotes.filter(note => note.category !== 'Favorite Notes');
+      return [...favoriteNotesFormatted, ...nonFavoriteNotes];
+    });
+  }, [favoriteNotes]);
 
   const toggleFavorite = (noteId: string) => {
-    setNotes(notes.map(note => 
-      note.id === noteId ? { ...note, favorite: !note.favorite } : note
-    ));
+    const note = notes.find(n => n.id === noteId);
+    if (note && note.category !== 'Favorite Notes') {
+      const newFavoriteState = !note.favorite;
+      onFavoriteToggle?.(note.title, newFavoriteState);
+      setNotes(notes.map(n => 
+        n.id === noteId ? { ...n, favorite: newFavoriteState } : n
+      ));
+    }
   };
+
+  const filteredNotes = notes.filter(note => {
+    const searchLower = searchQuery.toLowerCase();
+    return (
+      note.title.toLowerCase().includes(searchLower) ||
+      note.preview.toLowerCase().includes(searchLower) ||
+      note.category.toLowerCase().includes(searchLower)
+    );
+  });
 
   return (
     <Container>
@@ -241,7 +293,7 @@ export const Notes: React.FC<NotesProps> = ({ patientId, favoriteNotes = [] }) =
             </tr>
           </TableHead>
           <tbody>
-            {notes.map((note) => (
+            {filteredNotes.map((note) => (
               <TableRow key={note.id}>
                 <NameCell>
                   <Title>{note.title}</Title>
@@ -257,7 +309,11 @@ export const Notes: React.FC<NotesProps> = ({ patientId, favoriteNotes = [] }) =
                 <TableCell align="right">
                   <IconButton
                     onClick={() => toggleFavorite(note.id)}
-                    sx={{ color: note.favorite ? '#F79009' : '#697586' }}
+                    sx={{ 
+                      color: note.favorite ? '#F79009' : '#697586',
+                      cursor: note.category === 'Favorite Notes' ? 'default' : 'pointer',
+                      pointerEvents: note.category === 'Favorite Notes' ? 'none' : 'auto'
+                    }}
                   >
                     {note.favorite ? <StarIcon /> : <StarBorderIcon />}
                   </IconButton>

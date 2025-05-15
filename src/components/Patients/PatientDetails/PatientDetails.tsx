@@ -3,6 +3,7 @@ import { Box, Typography, styled, Button, Tabs, Tab, IconButton, Menu, MenuItem 
 import { useLeftPaneContext } from '../../LeftPane/LeftPaneContext';
 import { useNavigation } from '../../../context/NavigationContext';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import InfoIcon from '@mui/icons-material/Info';
 import PersonalInformationCard from './PersonalInformationCard';
 import PlanInformationCard from './PlanInformationCard';
 import FavoriteNotes from './FavoriteNotes';
@@ -22,6 +23,74 @@ const PatientDetailsWrapper = styled(Box)({
   flexDirection: 'column',
   backgroundColor: '#FFFFFF',
   overflowY: 'auto',
+});
+
+const NotificationBanner = styled(Box)({
+  margin: '0 32px 24px 32px',
+  height: 80,
+  backgroundColor: '#F8FAFF',
+  borderRadius: 16,
+  padding: '16px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: 10,
+  layoutAlign: 'STRETCH',
+  layoutGrow: 0,
+  layoutMode: 'HORIZONTAL',
+  itemSpacing: 10,
+});
+
+const InfoIconWrapper = styled(Box)({
+  width: 36,
+  height: 36,
+  borderRadius: '9999px',
+  backgroundColor: '#004C6F',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  boxShadow: '0px 1px 2px 0px rgba(0, 0, 0, 0.12)',
+  '& svg': {
+    width: 20,
+    height: 20,
+    color: '#FCFCFD',
+  },
+});
+
+const NotificationContent = styled(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 4,
+  flex: 1,
+});
+
+const NotificationTitle = styled(Typography)({
+  fontSize: 14,
+  fontWeight: 400,
+  color: '#364152',
+  lineHeight: '24px',
+});
+
+const NotificationText = styled(Typography)({
+  fontSize: 14,
+  fontWeight: 400,
+  color: '#364152',
+  lineHeight: '20px',
+});
+
+const ActionButtonsContainer = styled(Box)({
+  display: 'flex',
+  gap: 24,
+});
+
+const ActionButton = styled(Button)({
+  fontSize: 14,
+  fontWeight: 500,
+  color: '#004C6F',
+  textTransform: 'none',
+  '&:hover': {
+    backgroundColor: 'transparent',
+    opacity: 0.8,
+  },
 });
 
 const BreadcrumbsContainer = styled(Box)({
@@ -468,6 +537,8 @@ const PatientDetails: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [showPayment, setShowPayment] = useState(false);
+  const [customFavoriteNotes, setCustomFavoriteNotes] = useState<string[]>([]);
+  const [showBanner, setShowBanner] = useState(true);
 
   // Find the selected patient from the patients array
   const selectedPatient = patients.find(patient => patient.id === selectedPatientId);
@@ -481,7 +552,12 @@ const PatientDetails: React.FC = () => {
     ? generateMockPlanData(selectedPatient.name, selectedPatient.id)
     : null;
 
-  const mockFavoriteNotes = generateFavoriteNotes(selectedPatient?.name || '', selectedPatient?.id || '');
+  // Combine generated favorite notes with custom ones
+  const allFavoriteNotes = React.useMemo(() => {
+    const generatedNotes = generateFavoriteNotes(selectedPatient?.name || '', selectedPatient?.id || '');
+    return Array.from(new Set([...generatedNotes, ...customFavoriteNotes]));
+  }, [selectedPatient?.id, customFavoriteNotes]);
+
   const mockActivities = generateMockActivities(selectedPatient?.name || '', selectedPatient?.id || '');
   const mockHistoryData = generateMockHistoryData(selectedPatient?.id || '');
 
@@ -512,6 +588,14 @@ const PatientDetails: React.FC = () => {
     console.log('Edit plan information');
   };
 
+  const handleFavoriteNoteToggle = (note: string, isFavorite: boolean) => {
+    if (isFavorite) {
+      setCustomFavoriteNotes(prev => [...prev, note]);
+    } else {
+      setCustomFavoriteNotes(prev => prev.filter(n => n !== note));
+    }
+  };
+
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -522,6 +606,18 @@ const PatientDetails: React.FC = () => {
 
   const handleCheckoutClick = () => {
     setShowPayment(true);
+  };
+
+  const handleSendReminder = () => {
+    // TODO: Implement send reminder functionality
+    console.log('Sending reminder...');
+  };
+
+  const handleSendForms = () => {
+    // Dismiss the banner
+    setShowBanner(false);
+    // TODO: Implement send forms functionality
+    console.log('Sending forms...');
   };
 
   if (showPayment && selectedPatient) {
@@ -535,6 +631,24 @@ const PatientDetails: React.FC = () => {
         <BreadcrumbSeparator>/</BreadcrumbSeparator>
         <BreadcrumbActive>{selectedPatient?.name || 'Patient Not Found'}</BreadcrumbActive>
       </BreadcrumbsContainer>
+
+      {selectedPatient?.name === 'Christine Wilson' && showBanner && (
+          <NotificationBanner>
+            <InfoIconWrapper>
+              <InfoIcon />
+            </InfoIconWrapper>
+            <NotificationContent>
+              <NotificationTitle>Intake Forms Expired</NotificationTitle>
+              <NotificationText>
+                The patient needs to fill out this form before being able to be treated.
+              </NotificationText>
+            </NotificationContent>
+            <ActionButtonsContainer>
+              <ActionButton onClick={handleSendReminder}>Send Reminder</ActionButton>
+              <ActionButton onClick={handleSendForms}>Send Forms</ActionButton>
+            </ActionButtonsContainer>
+          </NotificationBanner>
+        )}
 
       <PatientHeaderContainer>
         <PatientInfoSection>
@@ -613,7 +727,7 @@ const PatientDetails: React.FC = () => {
               )}
             </MainContent>
             <SideContent>
-              <FavoriteNotes notes={mockFavoriteNotes} />
+              <FavoriteNotes notes={allFavoriteNotes} />
               <ActivitiesCard activities={mockActivities} />
               <HistoryOverviewCard
                 memberSince={mockHistoryData.memberSince}
@@ -626,7 +740,13 @@ const PatientDetails: React.FC = () => {
         {selectedTab === 2 && <PatientHistory patientId={selectedPatientId || ''} />}
         {selectedTab === 3 && <Documents patientId={selectedPatientId || ''} />}
         {selectedTab === 4 && <Box>Messages content</Box>}
-        {selectedTab === 5 && <Notes patientId={selectedPatientId || ''} favoriteNotes={mockFavoriteNotes} />}
+        {selectedTab === 5 && (
+          <Notes 
+            patientId={selectedPatientId || ''} 
+            favoriteNotes={allFavoriteNotes}
+            onFavoriteToggle={handleFavoriteNoteToggle}
+          />
+        )}
         {selectedTab === 6 && <Settings patientId={selectedPatientId || ''} />}
       </ContentContainer>
 
