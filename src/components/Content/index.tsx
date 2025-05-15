@@ -86,7 +86,7 @@ interface NavItemData {
 
 const navItems: NavItemData[] = [
   { id: 'home', label: 'Home' },
-  { id: 'tasks', label: 'Tasks', notifications: 2 },
+  { id: 'tasks', label: 'Tasks' },
   { id: 'leads', label: 'Leads', notifications: 24 },
   { id: 'messages', label: 'Messages', notifications: 5 },
   { id: 'calendar', label: 'Calendar' },
