@@ -61,7 +61,7 @@ const StyledDivider = styled(Divider)({
 type TimeFilter = 'Daily' | 'Monthly';
 
 const Home: React.FC = () => {
-  const coordinatorName = "Trisha";
+  const coordinatorName = "Lisa";
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const [selectedAppointment, setSelectedAppointment] = useState<string | null>(null);
   const [timeFilter, setTimeFilter] = useState<TimeFilter>('Daily');
