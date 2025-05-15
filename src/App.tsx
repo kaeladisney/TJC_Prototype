@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, CssBaseline, ThemeProvider, createTheme, styled } from '@mui/material';
 import Header from './components/Header';
 import Content from './components/Content';
 import LeftPane from './components/LeftPane';
+import PasswordScreen from './components/PasswordScreen';
 import { LeftPaneProvider } from './components/LeftPane/LeftPaneContext';
 import { NavigationProvider } from './context/NavigationContext';
 import './styles/fonts.css';
@@ -89,6 +90,25 @@ const MainContent = styled(Box)({
 });
 
 const App: React.FC = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    // Check if user was previously authenticated in this session
+    return sessionStorage.getItem('isAuthenticated') === 'true';
+  });
+
+  useEffect(() => {
+    // Update session storage when authentication state changes
+    sessionStorage.setItem('isAuthenticated', isAuthenticated.toString());
+  }, [isAuthenticated]);
+
+  if (!isAuthenticated) {
+    return (
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <PasswordScreen onPasswordCorrect={() => setIsAuthenticated(true)} />
+      </ThemeProvider>
+    );
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
