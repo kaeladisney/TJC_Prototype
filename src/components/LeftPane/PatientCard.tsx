@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Box, Typography, Menu, MenuItem, Tooltip } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useDrag, useDrop } from 'react-dnd';
@@ -157,36 +157,46 @@ const PatientCard: React.FC<PatientCardProps> = ({
   const { isCollapsed } = useLeftPaneContext();
   const { setActiveTab, setSelectedPatientId } = useNavigation();
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-  const ref = React.useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement | null>(null);
 
   const [{ isDragging }, drag] = useDrag({
-    type: 'patient-card',
-    item: { index },
+    type: 'card',
+    item: { id, index, type: 'standard' },
     collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
+      isDragging: !!monitor.isDragging(),
     }),
-    canDrag: () => isCheckedInSection,
+    canDrag: () => !!isCheckedInSection,
   });
 
   const [, drop] = useDrop({
-    accept: 'patient-card',
-    hover(item: { index: number }, monitor) {
-      if (!ref.current || !isCheckedInSection || typeof index === 'undefined') {
-        return;
-      }
-
+    accept: 'card',
+    hover: (item: { id: string; index: number; type: string }, monitor) => {
+      if (!moveCard || !ref.current || typeof index === 'undefined') return;
+      
       const dragIndex = item.index;
       const hoverIndex = index;
 
+      // Don't replace items with themselves
       if (dragIndex === hoverIndex) {
         return;
       }
 
-      const hoverBoundingRect = ref.current?.getBoundingClientRect();
+      // Get the rectangle of the current drop target
+      const hoverBoundingRect = ref.current.getBoundingClientRect();
+      
+      // Get the middle Y of the drop target
       const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+      
+      // Get the position of the mouse
       const clientOffset = monitor.getClientOffset();
-      const hoverClientY = clientOffset!.y - hoverBoundingRect.top;
-
+      if (!clientOffset) return;
+      
+      // Get the pixels to the top
+      const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+      
+      // Only perform the move when the mouse has crossed half of the items height
+      // When dragging downwards, only move when the cursor is below 50%
+      // When dragging upwards, only move when the cursor is above 50%
       if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
         return;
       }
@@ -194,12 +204,18 @@ const PatientCard: React.FC<PatientCardProps> = ({
         return;
       }
 
-      moveCard?.(dragIndex, hoverIndex);
+      moveCard(dragIndex, hoverIndex);
       item.index = hoverIndex;
     },
+    canDrop: () => !!isCheckedInSection,
   });
 
-  drag(drop(ref));
+  const dragDropRef = (node: HTMLDivElement | null) => {
+    ref.current = node;
+    if (node && isCheckedInSection) {
+      drag(drop(node));
+    }
+  };
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
@@ -239,7 +255,7 @@ const PatientCard: React.FC<PatientCardProps> = ({
 
   return (
     <CardWrapper 
-      ref={ref} 
+      ref={dragDropRef} 
       isDragging={isDragging} 
       isCollapsed={isCollapsed}
       onClick={handleClick}
@@ -281,11 +297,11 @@ const PatientCard: React.FC<PatientCardProps> = ({
         onClose={handleMenuClose}
         anchorOrigin={{
           vertical: 'bottom',
-          horizontal: 'right',
+          horizontal: 'left',
         }}
         transformOrigin={{
           vertical: 'top',
-          horizontal: 'right',
+          horizontal: 'left',
         }}
       >
         <MenuItem onClick={handleViewProfile}>View Patient Details</MenuItem>
@@ -293,7 +309,7 @@ const PatientCard: React.FC<PatientCardProps> = ({
           <>
             {!isFirst && <MenuItem onClick={handleMenuItemClick(onMoveUp)}>Move Up</MenuItem>}
             {!isLast && <MenuItem onClick={handleMenuItemClick(onMoveDown)}>Move Down</MenuItem>}
-            <MenuItem onClick={handleMenuItemClick(onRemove)}>Remove</MenuItem>
+            <MenuItem onClick={handleMenuItemClick(onRemove)} sx={{ color: 'error.main' }}>Remove from queue</MenuItem>
           </>
         )}
       </Menu>

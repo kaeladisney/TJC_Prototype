@@ -49,7 +49,7 @@ export const LeftPaneProvider: React.FC<LeftPaneProviderProps> = ({ children }) 
         ...(originalPatient || patient),
         details: {
           ...(originalPatient?.details || patient.details),
-          section: 'checkedIn' as const
+          section: 'checkedIn' // Always set to checkedIn when manually adding to queue
         }
       };
       

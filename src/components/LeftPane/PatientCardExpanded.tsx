@@ -6,6 +6,8 @@ import EllipsisHorizontal from '../icons/EllipsisHorizontal';
 import { useLeftPaneContext } from './LeftPaneContext';
 import { StatusBadgeType } from '../../types/patient';
 import { STATUS_COLORS, StatusColorKey } from '../../constants/statusColors';
+import { PatientDetails } from '../../types/patient';
+import { useNavigation } from '../../context/NavigationContext';
 
 const CardWrapper = styled(Box)<{ isDragging?: boolean; isCollapsed?: boolean }>(({ isDragging, isCollapsed }) => ({
   width: '100%',
@@ -20,7 +22,7 @@ const CardWrapper = styled(Box)<{ isDragging?: boolean; isCollapsed?: boolean }>
   alignItems: isCollapsed ? 'center' : 'stretch',
   justifyContent: isCollapsed ? 'center' : 'flex-start',
   gap: 16,
-  cursor: 'pointer',
+  cursor: isDragging ? 'grabbing' : 'pointer',
   opacity: isDragging ? 0.5 : 1,
   '&:hover': {
     backgroundColor: isCollapsed ? 'transparent' : '#EEF2F6',
@@ -165,25 +167,21 @@ interface PatientCardExpandedProps {
   name: string;
   initials: string;
   statuses: Array<{
-    label: StatusBadgeType;
+    label: string;
     color: string;
     bgColor: string;
   }>;
-  details?: {
-    dcPreference?: string;
-    planType?: string;
-    cycleDate?: string;
-  };
-  isFirst?: boolean;
-  isLast?: boolean;
-  isCheckedInSection?: boolean;
+  details: PatientDetails;
+  isFirst: boolean;
+  isLast: boolean;
+  onClick: () => void;
+  id?: string;
   index?: number;
+  isCheckedInSection?: boolean;
   moveCard?: (dragIndex: number, hoverIndex: number) => void;
   onMoveUp?: () => void;
   onMoveDown?: () => void;
-  onViewProfile?: () => void;
   onRemove?: () => void;
-  onClick?: () => void;
 }
 
 const getStatusColors = (label: StatusBadgeType): { color: string; bgColor: string } => {
@@ -191,54 +189,65 @@ const getStatusColors = (label: StatusBadgeType): { color: string; bgColor: stri
   return statusColor || { color: '#364152', bgColor: '#EEF2F6' };
 };
 
-const PatientCardExpanded: React.FC<PatientCardExpandedProps> = ({ 
-  name, 
-  initials, 
+const PatientCardExpanded: React.FC<PatientCardExpandedProps> = ({
+  name,
+  initials,
   statuses,
   details,
   isFirst,
   isLast,
-  isCheckedInSection = false,
+  onClick,
+  id,
   index,
+  isCheckedInSection,
   moveCard,
   onMoveUp,
   onMoveDown,
-  onViewProfile,
   onRemove,
-  onClick
 }) => {
   const { isCollapsed } = useLeftPaneContext();
+  const { setActiveTab, setSelectedPatientId } = useNavigation();
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-  const ref = React.useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement | null>(null);
 
   const [{ isDragging }, drag] = useDrag({
-    type: 'patient-card',
-    item: { index },
+    type: 'card',
+    item: { id, index, type: 'expanded' },
     collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
+      isDragging: !!monitor.isDragging(),
     }),
-    canDrag: () => isCheckedInSection,
+    canDrag: () => !!isCheckedInSection,
   });
 
   const [, drop] = useDrop({
-    accept: 'patient-card',
-    hover(item: { index: number }, monitor) {
-      if (!ref.current || !isCheckedInSection || typeof index === 'undefined') {
-        return;
-      }
-
+    accept: 'card',
+    hover: (item: { id: string; index: number; type: string }, monitor) => {
+      if (!moveCard || !ref.current || typeof index === 'undefined') return;
+      
       const dragIndex = item.index;
       const hoverIndex = index;
 
+      // Don't replace items with themselves
       if (dragIndex === hoverIndex) {
         return;
       }
 
-      const hoverBoundingRect = ref.current?.getBoundingClientRect();
+      // Get the rectangle of the current drop target
+      const hoverBoundingRect = ref.current.getBoundingClientRect();
+      
+      // Get the middle Y of the drop target
       const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+      
+      // Get the position of the mouse
       const clientOffset = monitor.getClientOffset();
-      const hoverClientY = clientOffset!.y - hoverBoundingRect.top;
-
+      if (!clientOffset) return;
+      
+      // Get the pixels to the top
+      const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+      
+      // Only perform the move when the mouse has crossed half of the items height
+      // When dragging downwards, only move when the cursor is below 50%
+      // When dragging upwards, only move when the cursor is above 50%
       if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
         return;
       }
@@ -246,12 +255,11 @@ const PatientCardExpanded: React.FC<PatientCardExpandedProps> = ({
         return;
       }
 
-      moveCard?.(dragIndex, hoverIndex);
+      moveCard(dragIndex, hoverIndex);
       item.index = hoverIndex;
     },
+    canDrop: () => !!isCheckedInSection,
   });
-
-  drag(drop(ref));
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
@@ -277,15 +285,29 @@ const PatientCardExpanded: React.FC<PatientCardExpandedProps> = ({
     }
   };
 
+  const handleViewProfile = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
+    if (id) {
+      setSelectedPatientId(id);
+      setActiveTab('patient-details');
+    }
+    setMenuAnchor(null);
+  };
+
   // Take first 2 statuses and show all badges including Forms
   const displayedStatuses = statuses.slice(0, 2);
   const remainingStatuses = statuses.slice(2);
   const remainingCount = remainingStatuses.length;
 
   return (
-    <CardWrapper 
-      ref={ref} 
-      isDragging={isDragging} 
+    <CardWrapper
+      ref={(node: HTMLDivElement | null) => {
+        ref.current = node;
+        if (node && isCheckedInSection) {
+          drag(drop(node));
+        }
+      }}
+      isDragging={isDragging}
       isCollapsed={isCollapsed}
       onClick={handleClick}
     >
@@ -310,7 +332,7 @@ const PatientCardExpanded: React.FC<PatientCardExpandedProps> = ({
                 <PatientName>{name}</PatientName>
                 <BadgesContainer>
                   {displayedStatuses.map((status, index) => {
-                    const colors = getStatusColors(status.label);
+                    const colors = getStatusColors(status.label as StatusBadgeType);
                     return (
                       <StatusBadge 
                         key={index} 
@@ -387,17 +409,27 @@ const PatientCardExpanded: React.FC<PatientCardExpandedProps> = ({
           horizontal: 'left',
         }}
       >
-        {isCheckedInSection && !isFirst && (
-          <MenuItem onClick={handleMenuItemClick(onMoveUp)}>Move up</MenuItem>
+        <MenuItem onClick={handleViewProfile}>View Patient Details</MenuItem>
+        {isCheckedInSection && (
+          <>
+            {!isFirst && (
+              <MenuItem onClick={handleMenuItemClick(onMoveUp)}>Move Up</MenuItem>
+            )}
+            {!isLast && (
+              <MenuItem onClick={handleMenuItemClick(onMoveDown)}>Move Down</MenuItem>
+            )}
+            <MenuItem onClick={handleMenuItemClick(onRemove)} sx={{ color: 'error.main' }}>Remove from queue</MenuItem>
+          </>
         )}
-        {isCheckedInSection && !isLast && (
-          <MenuItem onClick={handleMenuItemClick(onMoveDown)}>Move down</MenuItem>
-        )}
-        <MenuItem onClick={handleMenuItemClick(onViewProfile)}>View patient details</MenuItem>
-        <MenuItem onClick={handleMenuItemClick(onRemove)} sx={{ color: 'error.main' }}>Remove from queue</MenuItem>
       </Menu>
     </CardWrapper>
   );
 };
+
+const Controls = styled(Box)({
+  display: 'flex',
+  gap: 4,
+  marginLeft: 'auto',
+});
 
 export default PatientCardExpanded; 

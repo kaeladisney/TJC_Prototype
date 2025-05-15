@@ -301,26 +301,50 @@ const LeftPane: React.FC = () => {
             <StatusHeader count={checkedInPatients.length} />
             <PatientSection isCollapsed={isCollapsed}>
               {checkedInPatients.map((patient, index) => (
-                <PatientCard
-                  key={patient.id}
-                  id={patient.id}
-                  name={patient.name}
-                  initials={patient.initials}
-                  statuses={patient.statusBadges.map(badge => ({
-                    label: badge.type,
-                    color: getStatusColor(badge.type),
-                    bgColor: getStatusBgColor(badge.type)
-                  }))}
-                  isFirst={index === 0}
-                  isLast={index === checkedInPatients.length - 1}
-                  isCheckedInSection={true}
-                  index={index}
-                  moveCard={(dragIndex, hoverIndex) => reorderPatients(dragIndex, hoverIndex)}
-                  onMoveUp={() => handleMoveUp(index)}
-                  onMoveDown={() => handleMoveDown(index)}
-                  onRemove={() => handleRemove(index)}
-                  onClick={() => openDetailsDrawer(patient)}
-                />
+                patient.details?.dcPreference && patient.details?.planType ? (
+                  <PatientCardExpanded
+                    key={patient.id}
+                    name={patient.name}
+                    initials={patient.initials}
+                    statuses={patient.statusBadges.map(badge => ({
+                      label: badge.type,
+                      color: getStatusColor(badge.type),
+                      bgColor: getStatusBgColor(badge.type)
+                    }))}
+                    details={patient.details}
+                    isFirst={index === 0}
+                    isLast={index === checkedInPatients.length - 1}
+                    onClick={() => openDetailsDrawer(patient)}
+                    id={patient.id}
+                    isCheckedInSection={true}
+                    index={index}
+                    moveCard={(dragIndex, hoverIndex) => reorderPatients(dragIndex, hoverIndex)}
+                    onMoveUp={() => handleMoveUp(index)}
+                    onMoveDown={() => handleMoveDown(index)}
+                    onRemove={() => handleRemove(index)}
+                  />
+                ) : (
+                  <PatientCard
+                    key={patient.id}
+                    id={patient.id}
+                    name={patient.name}
+                    initials={patient.initials}
+                    statuses={patient.statusBadges.map(badge => ({
+                      label: badge.type,
+                      color: getStatusColor(badge.type),
+                      bgColor: getStatusBgColor(badge.type)
+                    }))}
+                    isFirst={index === 0}
+                    isLast={index === checkedInPatients.length - 1}
+                    isCheckedInSection={true}
+                    index={index}
+                    moveCard={(dragIndex, hoverIndex) => reorderPatients(dragIndex, hoverIndex)}
+                    onMoveUp={() => handleMoveUp(index)}
+                    onMoveDown={() => handleMoveDown(index)}
+                    onRemove={() => handleRemove(index)}
+                    onClick={() => openDetailsDrawer(patient)}
+                  />
+                )
               ))}
             </PatientSection>
           </SectionWrapper>

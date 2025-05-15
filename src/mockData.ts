@@ -13,7 +13,6 @@ export const mockPatients: Patient[] = [
       { type: 'New', label: 'New' }
     ],
     details: {
-      dcPreference: 'Dr. Sarah Miller, D.C.',
       planType: 'Initial Visit',
       cycleDate: '2/15/2024',
       visitsLeft: '10',
@@ -264,7 +263,6 @@ export const mockPatients: Patient[] = [
     name: 'Christine Wilson',
     initials: 'CW',
     statusBadges: [
-      { type: 'New', label: 'New' },
       { type: 'Forms', label: 'Forms' },
       { type: 'Pay', label: 'Pay' }
     ],
