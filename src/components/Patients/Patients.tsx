@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Typography, styled, Button, Tabs, Tab } from '@mui/material';
 import { useLeftPaneContext } from '../LeftPane/LeftPaneContext';
 import { useNavigation } from '../../context/NavigationContext';
+import { STATUS_COLORS, StatusColorKey } from '../../constants/statusColors';
 
 const PatientsWrapper = styled(Box)({
   height: '100%',
@@ -179,27 +180,26 @@ const Patients: React.FC = () => {
                 </Box>
 
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                  {patient.statusBadges.map((badge, index) => (
-                    <Box
-                      key={index}
-                      sx={{
-                        height: 24,
-                        padding: '4px 8px',
-                        borderRadius: 9999,
-                        backgroundColor: badge.type === 'New' ? '#E2FFE9' :
-                          badge.type === 'Forms' ? '#E0F2FE' :
-                          badge.type === 'Pay' ? '#FEF6EE' : '#EEF2F6',
-                        color: badge.type === 'New' ? '#008D3E' :
-                          badge.type === 'Forms' ? '#026AA2' :
-                          badge.type === 'Pay' ? '#B54708' : '#364152',
-                        fontSize: 12,
-                        fontWeight: 500,
-                        lineHeight: '16px',
-                      }}
-                    >
-                      {badge.type}
-                    </Box>
-                  ))}
+                  {patient.statusBadges.map((badge, index) => {
+                    const statusColor = STATUS_COLORS[badge.type as StatusColorKey] || { color: '#364152', bgColor: '#EEF2F6' };
+                    return (
+                      <Box
+                        key={index}
+                        sx={{
+                          height: 24,
+                          padding: '4px 8px',
+                          borderRadius: 9999,
+                          backgroundColor: statusColor.bgColor,
+                          color: statusColor.color,
+                          fontSize: 12,
+                          fontWeight: 500,
+                          lineHeight: '16px',
+                        }}
+                      >
+                        {badge.type}
+                      </Box>
+                    );
+                  })}
                 </Box>
 
                 <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>

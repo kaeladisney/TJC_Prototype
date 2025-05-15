@@ -5,6 +5,7 @@ import { useDrag, useDrop } from 'react-dnd';
 import EllipsisHorizontal from '../icons/EllipsisHorizontal';
 import { useLeftPaneContext } from './LeftPaneContext';
 import { StatusBadgeType } from '../../types/patient';
+import { STATUS_COLORS, StatusColorKey } from '../../constants/statusColors';
 
 const CardWrapper = styled(Box)<{ isDragging?: boolean; isCollapsed?: boolean }>(({ isDragging, isCollapsed }) => ({
   width: '100%',
@@ -186,16 +187,8 @@ interface PatientCardExpandedProps {
 }
 
 const getStatusColors = (label: StatusBadgeType): { color: string; bgColor: string } => {
-  switch (label) {
-    case 'New':
-      return { color: '#008D3E', bgColor: '#E2FFE9' };
-    case 'Forms':
-      return { color: '#026AA2', bgColor: '#E0F2FE' };
-    case 'Pay':
-      return { color: '#B54708', bgColor: '#FEF6EE' };
-    default:
-      return { color: '#364152', bgColor: '#EEF2F6' };
-  }
+  const statusColor = STATUS_COLORS[label as StatusColorKey];
+  return statusColor || { color: '#364152', bgColor: '#EEF2F6' };
 };
 
 const PatientCardExpanded: React.FC<PatientCardExpandedProps> = ({ 
@@ -284,14 +277,10 @@ const PatientCardExpanded: React.FC<PatientCardExpandedProps> = ({
     }
   };
 
-  // Take first 2 statuses but don't display Forms badges
-  const displayedStatuses = statuses
-    .filter(status => status.label !== 'Forms')
-    .slice(0, 2);
-  const remainingCount = statuses
-    .filter(status => status.label !== 'Forms')
-    .slice(2)
-    .length;
+  // Take first 2 statuses and show all badges including Forms
+  const displayedStatuses = statuses.slice(0, 2);
+  const remainingStatuses = statuses.slice(2);
+  const remainingCount = remainingStatuses.length;
 
   return (
     <CardWrapper 
@@ -334,11 +323,7 @@ const PatientCardExpanded: React.FC<PatientCardExpandedProps> = ({
                   })}
                   {remainingCount > 0 && (
                     <Tooltip 
-                      title={statuses
-                        .filter(status => status.label !== 'Forms')
-                        .slice(2)
-                        .map(status => status.label)
-                        .join(', ')}
+                      title={remainingStatuses.map(status => status.label).join(', ')}
                       arrow
                       placement="top"
                       componentsProps={{

@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Typography, Button, styled, Tooltip } from '@mui/material';
 import { Patient, StatusBadgeType } from '../types/patient';
 import AddIcon from '@mui/icons-material/Add';
+import { STATUS_COLORS, StatusColorKey } from '../constants/statusColors';
 
 const ResultsContainer = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -137,42 +138,17 @@ interface SearchResultsProps {
 }
 
 const getStatusColor = (type: StatusBadgeType): string => {
-  switch (type) {
-    case 'New':
-      return '#008D3E';
-    case 'Forms':
-      return '#026AA2';
-    case 'Pay':
-      return '#B54708';
-    default:
-      return '#364152';
-  }
+  const statusColor = STATUS_COLORS[type as StatusColorKey];
+  return statusColor?.color || '#364152';
 };
 
 const getStatusBgColor = (type: StatusBadgeType): string => {
-  switch (type) {
-    case 'New':
-      return '#E2FFE9';
-    case 'Forms':
-      return '#E0F2FE';
-    case 'Pay':
-      return '#FEF6EE';
-    default:
-      return '#EEF2F6';
-  }
+  const statusColor = STATUS_COLORS[type as StatusColorKey];
+  return statusColor?.bgColor || '#EEF2F6';
 };
 
 const getStatusLabel = (type: StatusBadgeType): string => {
-  switch (type) {
-    case 'New':
-      return 'New Patient';
-    case 'Forms':
-      return 'Forms Required';
-    case 'Pay':
-      return 'Payment Required';
-    default:
-      return '';
-  }
+  return type;
 };
 
 export const SearchResults: React.FC<SearchResultsProps> = ({ results, onAddToQueue }) => {

@@ -2,6 +2,7 @@ import { Patient, Section, StatusBadgeType } from './types/patient';
 import { Appointment } from './types/appointment';
 import { Doctor } from './types/doctor';
 import { LinkedUser, Task } from './types/task';
+import { STATUS_COLORS } from './constants/statusColors';
 
 export const mockPatients: Patient[] = [
   {
@@ -17,7 +18,8 @@ export const mockPatients: Patient[] = [
       planType: 'Initial Visit',
       cycleDate: '2/15/2024',
       visitsLeft: '10',
-      homeClinic: 'Downtown'
+      homeClinic: 'Downtown',
+      section: 'checkedIn'
     },
     personalInfo: {
       dateOfBirth: '1985-05-15',
@@ -54,7 +56,8 @@ export const mockPatients: Patient[] = [
       planType: '10 Visits',
       cycleDate: '2/20/2024',
       visitsLeft: '8',
-      homeClinic: 'Eastside'
+      homeClinic: 'Eastside',
+      section: 'checkedIn'
     },
     personalInfo: {
       dateOfBirth: '1990-08-23',
@@ -90,6 +93,7 @@ export const mockPatients: Patient[] = [
       dcPreference: 'Dr. Sarah Miller, D.C.',
       planType: '10 Visits',
       cycleDate: '1/20/2024',
+      section: 'withDoctor'
     },
     personalInfo: {
       dateOfBirth: '1985-07-15',
@@ -126,6 +130,7 @@ export const mockPatients: Patient[] = [
       dcPreference: 'Dr. James Wilson, D.C.',
       planType: '6 Visits',
       cycleDate: '1/25/2024',
+      section: 'withDoctor'
     },
     personalInfo: {
       dateOfBirth: '1992-03-28',
@@ -161,6 +166,7 @@ export const mockPatients: Patient[] = [
       dcPreference: 'Dr. Sarah Miller, D.C.',
       planType: '6 Visits',
       cycleDate: '1/22/2024',
+      section: 'completed'
     },
     personalInfo: {
       dateOfBirth: '1978-11-03',
@@ -196,6 +202,7 @@ export const mockPatients: Patient[] = [
       dcPreference: 'Dr. Will Murillo, D.C.',
       planType: 'Initial Visit',
       cycleDate: '1/23/2024',
+      section: 'completed'
     },
     personalInfo: {
       dateOfBirth: '1990-05-17',
@@ -261,8 +268,9 @@ export const mockPatients: Patient[] = [
     name: 'Christine Wilson',
     initials: 'CW',
     statusBadges: [
+      { type: 'New', label: 'New' },
       { type: 'Forms', label: 'Forms' },
-      { type: 'Pay', label: 'Payment Required' }
+      { type: 'Pay', label: 'Pay' }
     ],
     details: {
       dcPreference: 'Dr. Sarah Miller, D.C.',
@@ -457,20 +465,27 @@ export const statusOptions: Array<{
 }> = [
   {
     type: 'New',
-    color: '#008D3E',
-    bgColor: '#E2FFE9',
+    ...STATUS_COLORS.New,
     label: 'New Patient'
   },
   {
     type: 'Forms',
-    color: '#026AA2',
-    bgColor: '#E0F2FE',
+    ...STATUS_COLORS.Forms,
     label: 'Forms Required'
   },
   {
     type: 'Pay',
-    color: '#B54708',
-    bgColor: '#FEF6EE',
+    ...STATUS_COLORS.Pay,
     label: 'Payment Required'
+  },
+  {
+    type: 'Exam',
+    ...STATUS_COLORS.Exam,
+    label: 'Exam Required'
+  },
+  {
+    type: 'Military',
+    ...STATUS_COLORS.Military,
+    label: 'Military'
   }
 ]; 

@@ -5,6 +5,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Patient, StatusBadgeType } from '../../types/patient';
 import { useNavigation } from '../../context/NavigationContext';
+import { STATUS_COLORS, StatusColorKey } from '../../constants/statusColors';
 
 const DrawerContainer = styled(Box)({
   position: 'absolute',
@@ -111,12 +112,12 @@ const StatusBadge = styled(Box)<{ color: string; bgColor: string }>(({ color, bg
   gap: 4,
 }));
 
-const BadgeText = styled(Typography)({
+const BadgeText = styled(Typography)<{ color: string }>(({ color }) => ({
   fontSize: '12px',
   fontWeight: 500,
-  color: '#364152',
+  color: color,
   lineHeight: '16px',
-}) as typeof Typography;
+})) as typeof Typography;
 
 const InfoGrid = styled(Box)({
   display: 'grid',
@@ -295,16 +296,8 @@ const getRandomItems = (array: string[], count: number): string[] => {
 };
 
 const getStatusColors = (label: StatusBadgeType): { color: string; bgColor: string } => {
-  switch (label) {
-    case 'New':
-      return { color: '#008D3E', bgColor: '#E2FFE9' };
-    case 'Forms':
-      return { color: '#026AA2', bgColor: '#E0F2FE' };
-    case 'Pay':
-      return { color: '#B54708', bgColor: '#FEF6EE' };
-    default:
-      return { color: '#364152', bgColor: '#EEF2F6' };
-  }
+  const statusColor = STATUS_COLORS[label as StatusColorKey];
+  return statusColor || { color: '#364152', bgColor: '#EEF2F6' };
 };
 
 interface PatientDetailsDrawerProps {

@@ -1,9 +1,11 @@
-export type StatusBadgeType = 'New' | 'Forms' | 'Pay';
+export type StatusBadgeType = 'New' | 'Forms' | 'Pay' | 'Exam' | 'Military';
 
 export interface StatusBadge {
   type: StatusBadgeType;
   label: string;
 }
+
+export type SectionType = 'checkedIn' | 'withDoctor' | 'completed';
 
 export interface PatientDetails {
   dcPreference?: string;
@@ -14,8 +16,8 @@ export interface PatientDetails {
   homeClinic?: string;
   visitsLeft?: string;
   careCards?: number;
+  section?: SectionType;
   completed?: boolean;
-  section?: 'checkedIn' | 'withDoctor' | 'completed';
 }
 
 export interface Address {
@@ -55,8 +57,6 @@ export interface Patient {
   personalInfo: PersonalInfo;
   planInfo: PlanInfo;
 }
-
-export type SectionType = 'checkedIn' | 'withDoctor' | 'completed';
 
 export interface Section {
   type: SectionType;

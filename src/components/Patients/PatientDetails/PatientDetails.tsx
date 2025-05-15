@@ -14,6 +14,7 @@ import { Documents } from './Documents';
 import { Notes } from './Notes';
 import { Settings } from './Settings';
 import { Payment } from './Payment/Payment';
+import { STATUS_COLORS } from '../../../constants/statusColors';
 
 const PatientDetailsWrapper = styled(Box)({
   height: '100%',
@@ -542,15 +543,14 @@ const PatientDetails: React.FC = () => {
             <PatientNameSection>
               <PatientName>{selectedPatient?.name}</PatientName>
               <TagsContainer>
-                <Tag color="#E9E5FF">
-                  <TagText color="#6645FF">Forms</TagText>
-                </Tag>
-                <Tag color="#FFF4E5">
-                  <TagText color="#BF8200">Pay</TagText>
-                </Tag>
-                <Tag color="#F2F4F7">
-                  <TagText color="#364152">New</TagText>
-                </Tag>
+                {selectedPatient?.statusBadges.map((badge, index) => {
+                  const statusColor = STATUS_COLORS[badge.type];
+                  return (
+                    <Tag key={index} color={statusColor.bgColor}>
+                      <TagText color={statusColor.color}>{badge.type}</TagText>
+                    </Tag>
+                  );
+                })}
               </TagsContainer>
             </PatientNameSection>
           </PatientInfo>
