@@ -4,6 +4,7 @@ import { useLeftPaneContext } from '../LeftPane/LeftPaneContext';
 import { useNavigation } from '../../context/NavigationContext';
 import Home from '../Home';
 import Patients from '../Patients';
+import PatientDetails from '../Patients/PatientDetails';
 
 const ContentWrapper = styled(Box)({
   height: '100%',
@@ -103,6 +104,8 @@ const Content: React.FC = () => {
         return <Home />;
       case 'patients':
         return <Patients />;
+      case 'patient-details':
+        return <PatientDetails />;
       default:
         return (
           <Box sx={{ p: 4 }}>

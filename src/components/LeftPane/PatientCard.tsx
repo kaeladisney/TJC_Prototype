@@ -5,6 +5,7 @@ import { useDrag, useDrop } from 'react-dnd';
 import EllipsisHorizontal from '../icons/EllipsisHorizontal';
 import { useLeftPaneContext } from './LeftPaneContext';
 import { StatusBadgeType } from '../../types/patient';
+import { useNavigation } from '../../context/NavigationContext';
 
 const CardWrapper = styled(Box)<{ isDragging?: boolean; isCollapsed?: boolean }>(({ isDragging, isCollapsed }) => ({
   width: '100%',
@@ -113,6 +114,7 @@ const MenuIcon = styled(Box)<{ isCollapsed: boolean }>(({ isCollapsed }) => ({
 }));
 
 interface PatientCardProps {
+  id: string;
   name: string;
   initials: string;
   statuses: Array<{
@@ -127,7 +129,6 @@ interface PatientCardProps {
   moveCard?: (dragIndex: number, hoverIndex: number) => void;
   onMoveUp?: () => void;
   onMoveDown?: () => void;
-  onViewProfile?: () => void;
   onRemove?: () => void;
   onClick?: () => void;
 }
@@ -136,20 +137,17 @@ const getStatusColors = (label: StatusBadgeType): { color: string; bgColor: stri
   switch (label) {
     case 'New':
       return { color: '#008D3E', bgColor: '#E2FFE9' };
-    case 'Special':
-      return { color: '#6941C6', bgColor: '#F4F3FF' };
     case 'Forms':
       return { color: '#026AA2', bgColor: '#E0F2FE' };
     case 'Pay':
       return { color: '#B54708', bgColor: '#FEF6EE' };
-    case 'Notes':
-      return { color: '#175CD3', bgColor: '#EEF4FF' };
     default:
       return { color: '#364152', bgColor: '#EEF2F6' };
   }
 };
 
 const PatientCard: React.FC<PatientCardProps> = ({ 
+  id,
   name, 
   initials, 
   statuses,
@@ -160,11 +158,11 @@ const PatientCard: React.FC<PatientCardProps> = ({
   moveCard,
   onMoveUp,
   onMoveDown,
-  onViewProfile,
   onRemove,
   onClick
 }) => {
   const { isCollapsed } = useLeftPaneContext();
+  const { setActiveTab, setSelectedPatientId } = useNavigation();
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
   const ref = React.useRef<HTMLDivElement>(null);
 
@@ -234,6 +232,13 @@ const PatientCard: React.FC<PatientCardProps> = ({
     }
   };
 
+  const handleViewProfile = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
+    setSelectedPatientId(id);
+    setActiveTab('patient-details');
+    setMenuAnchor(null);
+  };
+
   const displayedStatuses = statuses.slice(0, 2);
   const remainingStatuses = statuses.slice(2);
   const remainingCount = remainingStatuses.length;
@@ -246,11 +251,7 @@ const PatientCard: React.FC<PatientCardProps> = ({
       onClick={handleClick}
     >
       <PatientInfo isCollapsed={isCollapsed}>
-        <Tooltip 
-          title={name}
-          placement="right"
-          open={isCollapsed ? undefined : false}
-        >
+        <Tooltip title={name}>
           <Avatar>
             <AvatarText>{initials}</AvatarText>
           </Avatar>
@@ -258,75 +259,49 @@ const PatientCard: React.FC<PatientCardProps> = ({
         <InfoContainer isCollapsed={isCollapsed}>
           <PatientName>{name}</PatientName>
           <BadgesContainer>
-            {displayedStatuses.map((status, index) => {
-              const colors = getStatusColors(status.label);
-              return (
-                <StatusBadge 
-                  key={index} 
-                  color={colors.color} 
-                  bgColor={colors.bgColor}
-                >
-                  <BadgeText color={colors.color}>{status.label}</BadgeText>
-                </StatusBadge>
-              );
-            })}
-            {remainingCount > 0 && (
-              <Tooltip 
-                title={remainingStatuses.map(status => status.label).join(', ')}
-                arrow
-                placement="top"
-                componentsProps={{
-                  popper: {
-                    sx: {
-                      '& .MuiTooltip-tooltip': {
-                        backgroundColor: '#364152',
-                        fontSize: '12px',
-                        padding: '8px 12px',
-                        borderRadius: '6px',
-                      },
-                      '& .MuiTooltip-arrow': {
-                        color: '#364152',
-                      },
-                    },
-                  },
-                }}
+            {displayedStatuses.map((status, index) => (
+              <StatusBadge
+                key={index}
+                color={status.color}
+                bgColor={status.bgColor}
               >
-                <StatusBadge 
-                  color="#364152" 
-                  bgColor="#EEF2F6"
-                >
-                  <BadgeText color="#364152">+{remainingCount}</BadgeText>
-                </StatusBadge>
-              </Tooltip>
+                <BadgeText color={status.color}>{status.label}</BadgeText>
+              </StatusBadge>
+            ))}
+            {remainingCount > 0 && (
+              <StatusBadge color="#364152" bgColor="#EEF2F6">
+                <BadgeText color="#364152">+{remainingCount}</BadgeText>
+              </StatusBadge>
             )}
           </BadgesContainer>
         </InfoContainer>
       </PatientInfo>
-      <MenuIcon isCollapsed={isCollapsed} onClick={handleMenuOpen}>
-        <EllipsisHorizontal />
-      </MenuIcon>
+      {!isCollapsed && (
+        <MenuIcon isCollapsed={isCollapsed} onClick={handleMenuOpen}>
+          <EllipsisHorizontal />
+        </MenuIcon>
+      )}
       <Menu
         anchorEl={menuAnchor}
         open={Boolean(menuAnchor)}
         onClose={handleMenuClose}
-        onClick={(e) => e.stopPropagation()}
         anchorOrigin={{
           vertical: 'bottom',
-          horizontal: 'left',
+          horizontal: 'right',
         }}
         transformOrigin={{
           vertical: 'top',
-          horizontal: 'left',
+          horizontal: 'right',
         }}
       >
-        {isCheckedInSection && !isFirst && (
-          <MenuItem onClick={handleMenuItemClick(onMoveUp)}>Move up</MenuItem>
+        <MenuItem onClick={handleViewProfile}>View Patient Details</MenuItem>
+        {isCheckedInSection && (
+          <>
+            {!isFirst && <MenuItem onClick={handleMenuItemClick(onMoveUp)}>Move Up</MenuItem>}
+            {!isLast && <MenuItem onClick={handleMenuItemClick(onMoveDown)}>Move Down</MenuItem>}
+            <MenuItem onClick={handleMenuItemClick(onRemove)}>Remove</MenuItem>
+          </>
         )}
-        {isCheckedInSection && !isLast && (
-          <MenuItem onClick={handleMenuItemClick(onMoveDown)}>Move down</MenuItem>
-        )}
-        <MenuItem onClick={handleMenuItemClick(onViewProfile)}>View patient profile</MenuItem>
-        <MenuItem onClick={handleMenuItemClick(onRemove)} sx={{ color: 'error.main' }}>Remove from queue</MenuItem>
       </Menu>
     </CardWrapper>
   );

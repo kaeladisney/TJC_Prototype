@@ -140,14 +140,10 @@ const getStatusColor = (type: StatusBadgeType): string => {
   switch (type) {
     case 'New':
       return '#008D3E';
-    case 'Special':
-      return '#6941C6';
     case 'Forms':
       return '#026AA2';
     case 'Pay':
       return '#B54708';
-    case 'Notes':
-      return '#175CD3';
     default:
       return '#364152';
   }
@@ -157,14 +153,10 @@ const getStatusBgColor = (type: StatusBadgeType): string => {
   switch (type) {
     case 'New':
       return '#E2FFE9';
-    case 'Special':
-      return '#F4F3FF';
     case 'Forms':
       return '#E0F2FE';
     case 'Pay':
       return '#FEF6EE';
-    case 'Notes':
-      return '#EEF4FF';
     default:
       return '#EEF2F6';
   }
@@ -173,17 +165,13 @@ const getStatusBgColor = (type: StatusBadgeType): string => {
 const getStatusLabel = (type: StatusBadgeType): string => {
   switch (type) {
     case 'New':
-      return 'New';
-    case 'Special':
-      return 'Special';
+      return 'New Patient';
     case 'Forms':
-      return 'Forms';
+      return 'Forms Required';
     case 'Pay':
-      return 'Pay';
-    case 'Notes':
-      return 'Notes';
+      return 'Payment Required';
     default:
-      return type;
+      return '';
   }
 };
 

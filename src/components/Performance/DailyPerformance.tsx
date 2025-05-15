@@ -52,10 +52,11 @@ export const DailyPerformance: React.FC<Props> = ({ timeFilter, onTimeFilterChan
           display: 'grid',
           gridTemplateColumns: {
             xs: '1fr',
-            sm: 'repeat(2, 1fr)',
-            md: 'repeat(3, 1fr)',
+            sm: 'repeat(auto-fit, minmax(250px, 1fr))',
           },
           gap: 2,
+          width: '100%',
+          minWidth: 0,
         }}
       >
         {visibleMetrics.map((metric) => (

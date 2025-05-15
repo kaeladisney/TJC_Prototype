@@ -10,6 +10,33 @@ import PatientCard from './PatientCard';
 import PatientCardExpanded from './PatientCardExpanded';
 import PatientDetailsDrawer from './PatientDetailsDrawer';
 import { Patient, StatusBadgeType } from '../../types/patient';
+import { useNavigation } from '../../context/NavigationContext';
+
+const getStatusColor = (type: StatusBadgeType): string => {
+  switch (type) {
+    case 'New':
+      return '#008D3E';
+    case 'Forms':
+      return '#026AA2';
+    case 'Pay':
+      return '#B54708';
+    default:
+      return '#364152';
+  }
+};
+
+const getStatusBgColor = (type: StatusBadgeType): string => {
+  switch (type) {
+    case 'New':
+      return '#E2FFE9';
+    case 'Forms':
+      return '#E0F2FE';
+    case 'Pay':
+      return '#FEF6EE';
+    default:
+      return '#EEF2F6';
+  }
+};
 
 const PaneWrapper = styled(Box)<{ isCollapsed: boolean }>(({ isCollapsed }) => ({
   width: isCollapsed ? 88 : 450,
@@ -24,13 +51,14 @@ const PaneWrapper = styled(Box)<{ isCollapsed: boolean }>(({ isCollapsed }) => (
 
 const Header = styled(Box)<{ isCollapsed: boolean }>(({ isCollapsed }) => ({
   width: '100%',
-  height: 76,
-  padding: isCollapsed ? 0 : '16px 24px',
+  height: 77,
+  padding: isCollapsed ? '0 32px' : '16px 24px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: isCollapsed ? 'center' : 'space-between',
   backgroundColor: '#F8FAFC',
   position: 'relative',
+  borderBottom: '1px solid #E5E7EB',
 }));
 
 const PaneHeaderText = styled(Typography)<{ isCollapsed: boolean }>(({ isCollapsed }) => ({
@@ -45,7 +73,7 @@ const PaneHeaderText = styled(Typography)<{ isCollapsed: boolean }>(({ isCollaps
 
 const Content = styled(Box)<{ isCollapsed: boolean }>(({ isCollapsed }) => ({
   padding: isCollapsed ? '12px 0' : '24px',
-  paddingTop: '0px',
+  paddingTop: '24px',
   flex: 1,
   overflowY: 'auto',
   display: 'flex',
@@ -61,11 +89,17 @@ const IconWrapper = styled(Box)<{ isCollapsed: boolean }>(({ isCollapsed }) => (
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  width: 24,
-  height: 24,
+  width: 32,
+  height: 32,
   cursor: 'pointer',
+  transition: 'all 0.2s ease-in-out',
   '&:hover': {
-    opacity: 0.8,
+    opacity: 0.7,
+  },
+  '& svg': {
+    width: 20,
+    height: 20,
+    color: '#364152',
   },
 }));
 
@@ -75,7 +109,8 @@ const StatusHeaderWrapper = styled(Box)<{ isCollapsed: boolean }>(({ isCollapsed
   gap: 8,
   height: 24,
   width: '100%',
-  marginBottom: 12,
+  marginBottom: 16,
+  marginTop: 8,
 }));
 
 const SectionHeaderText = styled(Typography)<{ isCollapsed: boolean }>(({ isCollapsed }) => ({
@@ -104,37 +139,37 @@ const BadgeText = styled(Typography)({
   lineHeight: '16px',
 });
 
-const StatusHeader: React.FC = () => {
+const StatusHeader: React.FC<{ count: number }> = ({ count }) => {
   const { isCollapsed } = useLeftPaneContext();
   return (
     <StatusHeaderWrapper isCollapsed={isCollapsed}>
       <SectionHeaderText isCollapsed={isCollapsed}>Checked In</SectionHeaderText>
       <NotificationBadge isCollapsed={isCollapsed}>
-        <BadgeText>2</BadgeText>
+        <BadgeText>{count}</BadgeText>
       </NotificationBadge>
     </StatusHeaderWrapper>
   );
 };
 
-const WithDoctorHeader: React.FC = () => {
+const WithDoctorHeader: React.FC<{ count: number }> = ({ count }) => {
   const { isCollapsed } = useLeftPaneContext();
   return (
     <StatusHeaderWrapper isCollapsed={isCollapsed}>
       <SectionHeaderText isCollapsed={isCollapsed}>With Doctor</SectionHeaderText>
       <NotificationBadge isCollapsed={isCollapsed}>
-        <BadgeText>2</BadgeText>
+        <BadgeText>{count}</BadgeText>
       </NotificationBadge>
     </StatusHeaderWrapper>
   );
 };
 
-const CompletedHeader: React.FC = () => {
+const CompletedHeader: React.FC<{ count: number }> = ({ count }) => {
   const { isCollapsed } = useLeftPaneContext();
   return (
     <StatusHeaderWrapper isCollapsed={isCollapsed}>
       <SectionHeaderText isCollapsed={isCollapsed}>Completed</SectionHeaderText>
       <NotificationBadge isCollapsed={isCollapsed}>
-        <BadgeText>2</BadgeText>
+        <BadgeText>{count}</BadgeText>
       </NotificationBadge>
     </StatusHeaderWrapper>
   );
@@ -188,116 +223,62 @@ const LeftPane: React.FC = () => {
     openDetailsDrawer,
     closeDetailsDrawer
   } = useLeftPaneContext();
-  const [patientsWithDoctor, setPatientsWithDoctor] = useState<Patient[]>([
-    {
-      id: '3',
-      name: 'Michael Chang',
-      initials: 'MC',
-      statusBadges: [
-        { type: 'Special', label: 'Special Care' },
-        { type: 'Forms', label: 'Forms Pending' },
-        { type: 'Notes', label: 'Notes Available' }
-      ],
-      details: {
-        dcPreference: 'Dr. Sarah Miller, D.C.',
-        planType: '10 Visits',
-        cycleDate: '1/20/2024',
-      }
-    },
-    {
-      id: '4',
-      name: 'Emily Rodriguez',
-      initials: 'ER',
-      statusBadges: [
-        { type: 'New', label: 'New Patient' },
-        { type: 'Pay', label: 'Payment Required' },
-        { type: 'Forms', label: 'Forms Pending' }
-      ],
-      details: {
-        dcPreference: 'Dr. James Wilson, D.C.',
-        planType: '6 Visits',
-        cycleDate: '1/25/2024',
-      }
-    }
-  ]);
+  const { setActiveTab, setSelectedPatientId } = useNavigation();
 
-  const [completedPatients, setCompletedPatients] = useState<Patient[]>([
-    {
-      id: '5',
-      name: 'Robert Martinez',
-      initials: 'RM',
-      statusBadges: [
-        { type: 'Forms' as StatusBadgeType, label: 'Forms Complete' },
-        { type: 'Special' as StatusBadgeType, label: 'Special Care' }
-      ],
-      details: {
-        dcPreference: 'Dr. Sarah Miller, D.C.',
-        planType: '6 Visits',
-        cycleDate: '1/22/2024',
-      }
-    },
-    {
-      id: '6',
-      name: 'Lisa Thompson',
-      initials: 'LT',
-      statusBadges: [
-        { type: 'New' as StatusBadgeType, label: 'New Patient' },
-        { type: 'Forms' as StatusBadgeType, label: 'Forms Pending' }
-      ],
-      details: {
-        dcPreference: 'Dr. Will Murillo, D.C.',
-        planType: 'Initial Visit',
-        cycleDate: '1/23/2024',
-      }
-    }
-  ]);
+  // Filter patients by their section status
+  const checkedInPatients = patients.filter(patient => patient.details?.section === 'checkedIn');
+  const withDoctorPatients = patients.filter(patient => patient.details?.section === 'withDoctor');
+  const completedPatients = patients.filter(patient => patient.details?.section === 'completed');
 
   const handleMoveUp = (index: number, section: 'checkedIn' | 'withDoctor' | 'completed' = 'checkedIn') => {
     if (index === 0) return;
-    let targetArray;
-    let setFunction;
     
+    // Calculate the actual index in the full patients array based on the section
+    let actualIndex;
     switch (section) {
       case 'withDoctor':
-        targetArray = [...patientsWithDoctor];
-        setFunction = setPatientsWithDoctor;
+        actualIndex = index + 2;
         break;
       case 'completed':
-        targetArray = [...completedPatients];
-        setFunction = setCompletedPatients;
+        actualIndex = index + 4;
         break;
       default:
-        return; // Let context handle checked-in patients
+        actualIndex = index;
     }
-
-    [targetArray[index - 1], targetArray[index]] = [targetArray[index], targetArray[index - 1]];
-    setFunction(targetArray);
+    
+    if (actualIndex > 0) {
+      reorderPatients(actualIndex, actualIndex - 1);
+    }
   };
 
   const handleMoveDown = (index: number, section: 'checkedIn' | 'withDoctor' | 'completed' = 'checkedIn') => {
-    let targetArray;
-    let setFunction;
-    
+    // Calculate the actual index and maximum index for the section
+    let actualIndex, maxIndex;
     switch (section) {
       case 'withDoctor':
-        targetArray = [...patientsWithDoctor];
-        setFunction = setPatientsWithDoctor;
+        actualIndex = index + 2;
+        maxIndex = 3;
         break;
       case 'completed':
-        targetArray = [...completedPatients];
-        setFunction = setCompletedPatients;
+        actualIndex = index + 4;
+        maxIndex = 5;
         break;
       default:
-        return; // Let context handle checked-in patients
+        actualIndex = index;
+        maxIndex = 1;
     }
-
-    if (index === targetArray.length - 1) return;
-    [targetArray[index], targetArray[index + 1]] = [targetArray[index + 1], targetArray[index]];
-    setFunction(targetArray);
+    
+    if (actualIndex < maxIndex) {
+      reorderPatients(actualIndex, actualIndex + 1);
+    }
   };
 
-  const handleViewProfile = (patient: Patient) => {
-    openDetailsDrawer(patient);
+  const handleViewProfile = () => {
+    if (selectedPatient) {
+      setSelectedPatientId(selectedPatient.id);
+      setActiveTab('patient-details');
+      closeDetailsDrawer();
+    }
   };
 
   const handleCheckout = () => {
@@ -306,47 +287,38 @@ const LeftPane: React.FC = () => {
   };
 
   const handleRemove = (index: number, section: 'checkedIn' | 'withDoctor' | 'completed' = 'checkedIn') => {
+    // Calculate the actual index in the full patients array based on the section
+    let actualIndex;
     switch (section) {
-      case 'checkedIn':
-        removePatient(index);
-        break;
       case 'withDoctor':
-        setPatientsWithDoctor(prev => prev.filter((_, i) => i !== index));
+        actualIndex = index + 2;
         break;
       case 'completed':
-        setCompletedPatients(prev => prev.filter((_, i) => i !== index));
+        actualIndex = index + 4;
         break;
+      default:
+        actualIndex = index;
     }
+    removePatient(actualIndex);
   };
 
-  const moveCard = useCallback((dragIndex: number, hoverIndex: number) => {
-    reorderPatients(dragIndex, hoverIndex);
-  }, [reorderPatients]);
-
   return (
-    <DndProvider backend={HTML5Backend}>
-      <PaneWrapper isCollapsed={isCollapsed}>
-        <Header isCollapsed={isCollapsed}>
-          {!isCollapsed && (
-            <PaneHeaderText isCollapsed={isCollapsed}>
-              Patient Queue
-            </PaneHeaderText>
-          )}
-          <IconWrapper 
-            isCollapsed={isCollapsed}
-            onClick={toggleCollapse}
-          >
-            {isCollapsed ? <ExpandIcon /> : <CollapseIcon />}
-          </IconWrapper>
-        </Header>
-
-        <Content isCollapsed={isCollapsed}>
+    <PaneWrapper isCollapsed={isCollapsed}>
+      <Header isCollapsed={isCollapsed}>
+        {!isCollapsed && <PaneHeaderText isCollapsed={isCollapsed}>Patient Queue</PaneHeaderText>}
+        <IconWrapper isCollapsed={isCollapsed} onClick={toggleCollapse}>
+          {isCollapsed ? <ExpandIcon /> : <CollapseIcon />}
+        </IconWrapper>
+      </Header>
+      <Content isCollapsed={isCollapsed}>
+        <DndProvider backend={HTML5Backend}>
           <SectionWrapper isCollapsed={isCollapsed}>
-            <StatusHeader />
+            <StatusHeader count={checkedInPatients.length} />
             <PatientSection isCollapsed={isCollapsed}>
-              {patients.map((patient, index) => (
+              {checkedInPatients.map((patient, index) => (
                 <PatientCard
                   key={patient.id}
+                  id={patient.id}
                   name={patient.name}
                   initials={patient.initials}
                   statuses={patient.statusBadges.map(badge => ({
@@ -355,24 +327,23 @@ const LeftPane: React.FC = () => {
                     bgColor: getStatusBgColor(badge.type)
                   }))}
                   isFirst={index === 0}
-                  isLast={index === patients.length - 1}
+                  isLast={index === checkedInPatients.length - 1}
                   isCheckedInSection={true}
                   index={index}
-                  moveCard={moveCard}
-                  onMoveUp={() => handleMoveUp(index, 'checkedIn')}
-                  onMoveDown={() => handleMoveDown(index, 'checkedIn')}
-                  onViewProfile={() => handleViewProfile(patient)}
-                  onRemove={() => removePatient(index)}
-                  onClick={() => handleViewProfile(patient)}
+                  moveCard={(dragIndex, hoverIndex) => reorderPatients(dragIndex, hoverIndex)}
+                  onMoveUp={() => handleMoveUp(index)}
+                  onMoveDown={() => handleMoveDown(index)}
+                  onRemove={() => handleRemove(index)}
+                  onClick={() => openDetailsDrawer(patient)}
                 />
               ))}
             </PatientSection>
           </SectionWrapper>
 
           <SectionWrapper isCollapsed={isCollapsed}>
-            <WithDoctorHeader />
+            <WithDoctorHeader count={withDoctorPatients.length} />
             <PatientSection isCollapsed={isCollapsed}>
-              {patientsWithDoctor.map((patient, index) => (
+              {withDoctorPatients.map((patient, index) => (
                 <PatientCardExpanded
                   key={patient.id}
                   name={patient.name}
@@ -384,23 +355,20 @@ const LeftPane: React.FC = () => {
                   }))}
                   details={patient.details}
                   isFirst={index === 0}
-                  isLast={index === patientsWithDoctor.length - 1}
-                  onMoveUp={() => handleMoveUp(index, 'withDoctor')}
-                  onMoveDown={() => handleMoveDown(index, 'withDoctor')}
-                  onViewProfile={() => handleViewProfile(patient)}
-                  onRemove={() => handleRemove(index, 'withDoctor')}
-                  onClick={() => handleViewProfile(patient)}
+                  isLast={index === withDoctorPatients.length - 1}
+                  onClick={() => openDetailsDrawer(patient)}
                 />
               ))}
             </PatientSection>
           </SectionWrapper>
 
           <SectionWrapper isCollapsed={isCollapsed}>
-            <CompletedHeader />
+            <CompletedHeader count={completedPatients.length} />
             <PatientSection isCollapsed={isCollapsed}>
               {completedPatients.map((patient, index) => (
                 <PatientCard
                   key={patient.id}
+                  id={patient.id}
                   name={patient.name}
                   initials={patient.initials}
                   statuses={patient.statusBadges.map(badge => ({
@@ -410,64 +378,23 @@ const LeftPane: React.FC = () => {
                   }))}
                   isFirst={index === 0}
                   isLast={index === completedPatients.length - 1}
-                  onMoveUp={() => handleMoveUp(index, 'completed')}
-                  onMoveDown={() => handleMoveDown(index, 'completed')}
-                  onViewProfile={() => handleViewProfile(patient)}
-                  onRemove={() => handleRemove(index, 'completed')}
-                  onClick={() => handleViewProfile(patient)}
+                  onClick={() => openDetailsDrawer(patient)}
                 />
               ))}
             </PatientSection>
           </SectionWrapper>
-        </Content>
+        </DndProvider>
+      </Content>
 
-        <PatientDetailsDrawer
-          open={isDetailsDrawerOpen}
-          patient={selectedPatient}
-          onClose={closeDetailsDrawer}
-          onViewProfile={() => {
-            // Handle view profile navigation
-            closeDetailsDrawer();
-          }}
-          onCheckout={handleCheckout}
-        />
-      </PaneWrapper>
-    </DndProvider>
+      <PatientDetailsDrawer
+        open={isDetailsDrawerOpen}
+        onClose={closeDetailsDrawer}
+        patient={selectedPatient}
+        onCheckout={handleCheckout}
+        onViewProfile={handleViewProfile}
+      />
+    </PaneWrapper>
   );
-};
-
-const getStatusColor = (type: StatusBadgeType): string => {
-  switch (type) {
-    case 'New':
-      return '#008D3E';
-    case 'Special':
-      return '#6941C6';
-    case 'Forms':
-      return '#026AA2';
-    case 'Pay':
-      return '#B54708';
-    case 'Notes':
-      return '#175CD3';
-    default:
-      return '#364152';
-  }
-};
-
-const getStatusBgColor = (type: StatusBadgeType): string => {
-  switch (type) {
-    case 'New':
-      return '#E2FFE9';
-    case 'Special':
-      return '#F4F3FF';
-    case 'Forms':
-      return '#E0F2FE';
-    case 'Pay':
-      return '#FEF6EE';
-    case 'Notes':
-      return '#EEF4FF';
-    default:
-      return '#EEF2F6';
-  }
 };
 
 export default LeftPane; 

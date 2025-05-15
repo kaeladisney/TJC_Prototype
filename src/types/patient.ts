@@ -1,4 +1,4 @@
-export type StatusBadgeType = 'New' | 'Special' | 'Forms' | 'Pay' | 'Notes';
+export type StatusBadgeType = 'New' | 'Forms' | 'Pay';
 
 export interface StatusBadge {
   type: StatusBadgeType;
@@ -6,7 +6,7 @@ export interface StatusBadge {
 }
 
 export interface PatientDetails {
-  dcPreference: string;
+  dcPreference?: string;
   planType: string;
   cycleDate: string;
   dateOfBirth?: string;
@@ -14,6 +14,33 @@ export interface PatientDetails {
   homeClinic?: string;
   visitsLeft?: string;
   careCards?: number;
+  completed?: boolean;
+  section?: 'checkedIn' | 'withDoctor' | 'completed';
+}
+
+export interface Address {
+  street: string;
+  city: string;
+  state: string;
+  zipCode: string;
+}
+
+export interface PersonalInfo {
+  dateOfBirth: string;
+  sex: string;
+  email: string;
+  phone: string;
+  address: Address;
+}
+
+export interface PlanInfo {
+  productType: string;
+  planStatus: string;
+  cycleDate: string;
+  arbMonthlyAmount: number;
+  nextPaymentDate: string;
+  visitBalance: number;
+  totalVisits: number;
 }
 
 export interface Patient {
@@ -25,6 +52,8 @@ export interface Patient {
     label: string;
   }>;
   details: PatientDetails;
+  personalInfo: PersonalInfo;
+  planInfo: PlanInfo;
 }
 
 export type SectionType = 'checkedIn' | 'withDoctor' | 'completed';

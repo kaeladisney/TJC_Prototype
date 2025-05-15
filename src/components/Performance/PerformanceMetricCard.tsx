@@ -54,19 +54,45 @@ export const PerformanceMetricCard: React.FC<Props> = ({ metric }) => {
         flexDirection: 'column',
         gap: 2,
         flex: 1,
-        minWidth: 250,
+        minWidth: 0,
+        width: '100%',
       }}
     >
-      <Typography variant="body2" color="text.secondary">
+      <Typography variant="body2" color="text.secondary" noWrap>
         {metric.title}
       </Typography>
       
-      <Box>
-        <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5, mb: 1 }}>
-          <Typography variant="h6" component="span" sx={{ fontWeight: 'bold' }}>
+      <Box sx={{ minWidth: 0 }}>
+        <Box sx={{ 
+          display: 'flex', 
+          alignItems: 'baseline', 
+          gap: 0.5, 
+          mb: 1,
+          flexWrap: 'wrap'
+        }}>
+          <Typography 
+            variant="h6" 
+            component="span" 
+            sx={{ 
+              fontWeight: 'bold',
+              minWidth: 0,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap'
+            }}
+          >
             {formatValue(metric.value, metric.type)}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography 
+            variant="body2" 
+            color="text.secondary"
+            sx={{
+              minWidth: 0,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap'
+            }}
+          >
             of {formatValue(metric.goal, metric.type)}
           </Typography>
         </Box>
@@ -82,7 +108,12 @@ export const PerformanceMetricCard: React.FC<Props> = ({ metric }) => {
         />
       </Box>
       
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <Box sx={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        gap: 1,
+        flexWrap: 'wrap'
+      }}>
         <TrendBadge isPositive={metric.trend.isPositive}>
           {metric.trend.isPositive ? (
             <TrendingUpIcon fontSize="small" />
@@ -91,7 +122,16 @@ export const PerformanceMetricCard: React.FC<Props> = ({ metric }) => {
           )}
           {metric.trend.percentage}%
         </TrendBadge>
-        <Typography variant="body2" color="text.secondary">
+        <Typography 
+          variant="body2" 
+          color="text.secondary"
+          sx={{
+            minWidth: 0,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
+          }}
+        >
           compared to {metric.comparisonPeriod}
         </Typography>
       </Box>

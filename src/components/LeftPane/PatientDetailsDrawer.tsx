@@ -111,12 +111,12 @@ const StatusBadge = styled(Box)<{ color: string; bgColor: string }>(({ color, bg
   gap: 4,
 }));
 
-const BadgeText = styled(Typography)<{ color: string }>(({ color }) => ({
-  fontSize: 12,
+const BadgeText = styled(Typography)({
+  fontSize: '12px',
   fontWeight: 500,
-  color: color,
+  color: '#364152',
   lineHeight: '16px',
-}));
+}) as typeof Typography;
 
 const InfoGrid = styled(Box)({
   display: 'grid',
@@ -149,18 +149,35 @@ const ExpandableSection = styled(Box)({
 });
 
 const ExpandableHeader = styled(Box)({
-  padding: '12px 16px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
   cursor: 'pointer',
+  padding: '12px 16px',
   '&:hover': {
-    backgroundColor: '#F1F5F9',
+    backgroundColor: '#F8FAFC',
   },
 });
 
+const HeaderContent = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '8px',
+});
+
+const CountBadge = styled(Box)({
+  backgroundColor: '#EEF2F6',
+  borderRadius: '9999px',
+  padding: '2px 8px',
+  minWidth: '22px',
+  height: '22px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+});
+
 const ExpandableContent = styled(Box)({
-  padding: '16px',
+  padding: '8px 16px 16px 16px',
   borderTop: '1px solid #E5E7EB',
 });
 
@@ -206,7 +223,7 @@ const ListItem = styled(Box)({
   padding: '8px 0',
   display: 'flex',
   alignItems: 'flex-start',
-  gap: 8,
+  gap: 12,
 });
 
 const ListItemIcon = styled(Box)({
@@ -227,11 +244,13 @@ const ListItemText = styled(Typography)({
 const ActionItemsList = styled(Box)({
   display: 'flex',
   flexDirection: 'column',
+  gap: 4,
 });
 
 const FavoriteNotesList = styled(Box)({
   display: 'flex',
   flexDirection: 'column',
+  gap: 4,
 });
 
 const POSSIBLE_ACTION_ITEMS = [
@@ -279,14 +298,10 @@ const getStatusColors = (label: StatusBadgeType): { color: string; bgColor: stri
   switch (label) {
     case 'New':
       return { color: '#008D3E', bgColor: '#E2FFE9' };
-    case 'Special':
-      return { color: '#6941C6', bgColor: '#F4F3FF' };
     case 'Forms':
       return { color: '#026AA2', bgColor: '#E0F2FE' };
     case 'Pay':
       return { color: '#B54708', bgColor: '#FEF6EE' };
-    case 'Notes':
-      return { color: '#175CD3', bgColor: '#EEF4FF' };
     default:
       return { color: '#364152', bgColor: '#EEF2F6' };
   }
@@ -408,9 +423,14 @@ const PatientDetailsDrawer: React.FC<PatientDetailsDrawerProps> = ({
 
               <ExpandableSection>
                 <ExpandableHeader onClick={() => setActionItemsExpanded(!actionItemsExpanded)}>
-                  <Typography variant="subtitle2" color="#364152">
-                    Action Items
-                  </Typography>
+                  <HeaderContent>
+                    <Typography variant="subtitle2" color="#364152">
+                      Action Items
+                    </Typography>
+                    <CountBadge>
+                      <BadgeText>{actionItems.length}</BadgeText>
+                    </CountBadge>
+                  </HeaderContent>
                   <IconButton
                     size="small"
                     sx={{
@@ -437,9 +457,14 @@ const PatientDetailsDrawer: React.FC<PatientDetailsDrawerProps> = ({
 
               <ExpandableSection>
                 <ExpandableHeader onClick={() => setFavoriteNotesExpanded(!favoriteNotesExpanded)}>
-                  <Typography variant="subtitle2" color="#364152">
-                    Favorite Notes
-                  </Typography>
+                  <HeaderContent>
+                    <Typography variant="subtitle2" color="#364152">
+                      Favorite Notes
+                    </Typography>
+                    <CountBadge>
+                      <BadgeText>{favoriteNotes.length}</BadgeText>
+                    </CountBadge>
+                  </HeaderContent>
                   <IconButton
                     size="small"
                     sx={{

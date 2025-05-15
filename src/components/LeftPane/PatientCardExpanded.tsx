@@ -168,10 +168,10 @@ interface PatientCardExpandedProps {
     color: string;
     bgColor: string;
   }>;
-  details: {
-    dcPreference: string;
-    planType: string;
-    cycleDate: string;
+  details?: {
+    dcPreference?: string;
+    planType?: string;
+    cycleDate?: string;
   };
   isFirst?: boolean;
   isLast?: boolean;
@@ -189,14 +189,10 @@ const getStatusColors = (label: StatusBadgeType): { color: string; bgColor: stri
   switch (label) {
     case 'New':
       return { color: '#008D3E', bgColor: '#E2FFE9' };
-    case 'Special':
-      return { color: '#6941C6', bgColor: '#F4F3FF' };
     case 'Forms':
       return { color: '#026AA2', bgColor: '#E0F2FE' };
     case 'Pay':
       return { color: '#B54708', bgColor: '#FEF6EE' };
-    case 'Notes':
-      return { color: '#175CD3', bgColor: '#EEF4FF' };
     default:
       return { color: '#364152', bgColor: '#EEF2F6' };
   }
@@ -370,15 +366,15 @@ const PatientCardExpanded: React.FC<PatientCardExpandedProps> = ({
           <DetailsGrid isCollapsed={isCollapsed}>
             <DetailItem>
               <DetailLabel>DC Preference</DetailLabel>
-              <TruncatedText text={details.dcPreference} />
+              <TruncatedText text={details?.dcPreference || ''} />
             </DetailItem>
             <DetailItem>
               <DetailLabel>Plan Type</DetailLabel>
-              <TruncatedText text={details.planType} />
+              <TruncatedText text={details?.planType || ''} />
             </DetailItem>
             <DetailItem>
               <DetailLabel>Cycle Date</DetailLabel>
-              <TruncatedText text={details.cycleDate} />
+              <TruncatedText text={details?.cycleDate || ''} />
             </DetailItem>
           </DetailsGrid>
         </>
@@ -403,7 +399,7 @@ const PatientCardExpanded: React.FC<PatientCardExpandedProps> = ({
         {isCheckedInSection && !isLast && (
           <MenuItem onClick={handleMenuItemClick(onMoveDown)}>Move down</MenuItem>
         )}
-        <MenuItem onClick={handleMenuItemClick(onViewProfile)}>View patient profile</MenuItem>
+        <MenuItem onClick={handleMenuItemClick(onViewProfile)}>View patient details</MenuItem>
         <MenuItem onClick={handleMenuItemClick(onRemove)} sx={{ color: 'error.main' }}>Remove from queue</MenuItem>
       </Menu>
     </CardWrapper>

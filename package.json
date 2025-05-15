@@ -14,6 +14,7 @@
     "@types/node": "^16.18.76",
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
+    "date-fns": "^4.1.0",
     "react": "^18.2.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
@@ -49,8 +50,8 @@
     ]
   },
   "devDependencies": {
+    "@types/date-fns": "^2.5.3",
     "gh-pages": "^6.3.0"
   },
   "homepage": "https://kaeladisney.github.io/TJC_Prototype"
 }
- 

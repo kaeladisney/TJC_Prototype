@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography, styled, Button, Tabs, Tab } from '@mui/material';
 import { useLeftPaneContext } from '../LeftPane/LeftPaneContext';
+import { useNavigation } from '../../context/NavigationContext';
 
 const PatientsWrapper = styled(Box)({
   height: '100%',
@@ -66,6 +67,7 @@ const PatientCard = styled(Box)({
   display: 'flex',
   flexDirection: 'column',
   gap: '16px',
+  cursor: 'pointer',
   '&:hover': {
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
   },
@@ -97,9 +99,15 @@ const TabPanel = (props: TabPanelProps) => {
 const Patients: React.FC = () => {
   const [tabValue, setTabValue] = React.useState(0);
   const { patients } = useLeftPaneContext();
+  const { setActiveTab, setSelectedPatientId } = useNavigation();
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
+  };
+
+  const handlePatientClick = (patientId: string) => {
+    setSelectedPatientId(patientId);
+    setActiveTab('patient-details');
   };
 
   return (
@@ -138,7 +146,10 @@ const Patients: React.FC = () => {
         <ContentArea>
           <PatientGrid>
             {patients.map((patient) => (
-              <PatientCard key={patient.id}>
+              <PatientCard 
+                key={patient.id}
+                onClick={() => handlePatientClick(patient.id)}
+              >
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <Box
                     sx={{
@@ -175,16 +186,12 @@ const Patients: React.FC = () => {
                         height: 24,
                         padding: '4px 8px',
                         borderRadius: 9999,
-                        backgroundColor: badge.type === 'New' ? '#E2FFE9' : 
-                          badge.type === 'Special' ? '#F4F3FF' :
+                        backgroundColor: badge.type === 'New' ? '#E2FFE9' :
                           badge.type === 'Forms' ? '#E0F2FE' :
-                          badge.type === 'Pay' ? '#FEF6EE' :
-                          badge.type === 'Notes' ? '#EEF4FF' : '#EEF2F6',
+                          badge.type === 'Pay' ? '#FEF6EE' : '#EEF2F6',
                         color: badge.type === 'New' ? '#008D3E' :
-                          badge.type === 'Special' ? '#6941C6' :
                           badge.type === 'Forms' ? '#026AA2' :
-                          badge.type === 'Pay' ? '#B54708' :
-                          badge.type === 'Notes' ? '#175CD3' : '#364152',
+                          badge.type === 'Pay' ? '#B54708' : '#364152',
                         fontSize: 12,
                         fontWeight: 500,
                         lineHeight: '16px',

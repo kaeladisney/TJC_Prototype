@@ -7,7 +7,6 @@ import {
   Button
 } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import Logo from '../icons/Logo';
 import NotificationsIcon from '../icons/Notifications';
 import GetFeedbackIcon from '../icons/GetFeedback';
 import ProfileImage from '../icons/ProfileImage';
@@ -97,7 +96,6 @@ const Header: React.FC = () => {
   return (
     <HeaderWrapper>
       <LogoSection>
-        <Logo />
         <Typography sx={{ color: '#282829', fontWeight: 500 }}>ALIGN</Typography>
         <Box sx={{ width: 2, height: 24, bgcolor: '#E2E2E6', mx: 1 }} />
         <OrganizationSection>

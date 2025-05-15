@@ -18,6 +18,27 @@ export const mockPatients: Patient[] = [
       cycleDate: '2/15/2024',
       visitsLeft: '10',
       homeClinic: 'Downtown'
+    },
+    personalInfo: {
+      dateOfBirth: '1985-05-15',
+      sex: 'Male',
+      email: 'christopher.anderson@email.com',
+      phone: '(555) 123-4567',
+      address: {
+        street: '123 Main Street',
+        city: 'Gotham',
+        state: 'NY',
+        zipCode: '10001'
+      }
+    },
+    planInfo: {
+      productType: 'Initial Consultation',
+      planStatus: 'Pending',
+      cycleDate: '2024-02-15',
+      arbMonthlyAmount: 99.99,
+      nextPaymentDate: '2024-03-15',
+      visitBalance: 1,
+      totalVisits: 1
     }
   },
   {
@@ -25,8 +46,8 @@ export const mockPatients: Patient[] = [
     name: 'Christina Martinez',
     initials: 'CM',
     statusBadges: [
-      { type: 'Special', label: 'Special' },
-      { type: 'Pay', label: 'Pay' }
+      { type: 'Pay', label: 'Pay' },
+      { type: 'Forms', label: 'Forms' }
     ],
     details: {
       dcPreference: 'Dr. James Wilson, D.C.',
@@ -34,6 +55,168 @@ export const mockPatients: Patient[] = [
       cycleDate: '2/20/2024',
       visitsLeft: '8',
       homeClinic: 'Eastside'
+    },
+    personalInfo: {
+      dateOfBirth: '1990-08-23',
+      sex: 'Female',
+      email: 'christina.martinez@email.com',
+      phone: '(555) 987-6543',
+      address: {
+        street: '456 Elm Street',
+        city: 'Gotham',
+        state: 'NY',
+        zipCode: '10002'
+      }
+    },
+    planInfo: {
+      productType: 'Premium Care Package',
+      planStatus: 'Payment Required',
+      cycleDate: '2024-02-20',
+      arbMonthlyAmount: 199.99,
+      nextPaymentDate: '2024-03-20',
+      visitBalance: 8,
+      totalVisits: 10
+    }
+  },
+  {
+    id: '3',
+    name: 'Michael Chang',
+    initials: 'MC',
+    statusBadges: [
+      { type: 'Forms', label: 'Forms Pending' },
+      { type: 'Pay', label: 'Payment Required' }
+    ],
+    details: {
+      dcPreference: 'Dr. Sarah Miller, D.C.',
+      planType: '10 Visits',
+      cycleDate: '1/20/2024',
+    },
+    personalInfo: {
+      dateOfBirth: '1985-07-15',
+      sex: 'Male',
+      email: 'michael.chang@email.com',
+      phone: '(555) 123-4567',
+      address: {
+        street: '789 Oak Avenue',
+        city: 'Gotham',
+        state: 'NY',
+        zipCode: '10001'
+      }
+    },
+    planInfo: {
+      productType: 'Premium Care Package',
+      planStatus: 'Active',
+      cycleDate: '2024-01-20',
+      arbMonthlyAmount: 199.99,
+      nextPaymentDate: '2024-02-20',
+      visitBalance: 8,
+      totalVisits: 10
+    }
+  },
+  {
+    id: '4',
+    name: 'Emily Rodriguez',
+    initials: 'ER',
+    statusBadges: [
+      { type: 'New', label: 'New Patient' },
+      { type: 'Pay', label: 'Payment Required' },
+      { type: 'Forms', label: 'Forms Pending' }
+    ],
+    details: {
+      dcPreference: 'Dr. James Wilson, D.C.',
+      planType: '6 Visits',
+      cycleDate: '1/25/2024',
+    },
+    personalInfo: {
+      dateOfBirth: '1992-03-28',
+      sex: 'Female',
+      email: 'emily.rodriguez@email.com',
+      phone: '(555) 234-5678',
+      address: {
+        street: '456 Pine Street',
+        city: 'Gotham',
+        state: 'NY',
+        zipCode: '10002'
+      }
+    },
+    planInfo: {
+      productType: 'Standard Care Package',
+      planStatus: 'Payment Required',
+      cycleDate: '2024-01-25',
+      arbMonthlyAmount: 149.99,
+      nextPaymentDate: '2024-02-25',
+      visitBalance: 6,
+      totalVisits: 6
+    }
+  },
+  {
+    id: '5',
+    name: 'Robert Martinez',
+    initials: 'RM',
+    statusBadges: [
+      { type: 'Forms', label: 'Forms Complete' },
+      { type: 'Pay', label: 'Payment Required' }
+    ],
+    details: {
+      dcPreference: 'Dr. Sarah Miller, D.C.',
+      planType: '6 Visits',
+      cycleDate: '1/22/2024',
+    },
+    personalInfo: {
+      dateOfBirth: '1978-11-03',
+      sex: 'Male',
+      email: 'robert.martinez@email.com',
+      phone: '(555) 345-6789',
+      address: {
+        street: '321 Maple Drive',
+        city: 'Gotham',
+        state: 'NY',
+        zipCode: '10003'
+      }
+    },
+    planInfo: {
+      productType: 'Standard Care Package',
+      planStatus: 'Active',
+      cycleDate: '2024-01-22',
+      arbMonthlyAmount: 149.99,
+      nextPaymentDate: '2024-02-22',
+      visitBalance: 4,
+      totalVisits: 6
+    }
+  },
+  {
+    id: '6',
+    name: 'Lisa Thompson',
+    initials: 'LT',
+    statusBadges: [
+      { type: 'New', label: 'New Patient' },
+      { type: 'Forms', label: 'Forms Pending' }
+    ],
+    details: {
+      dcPreference: 'Dr. Will Murillo, D.C.',
+      planType: 'Initial Visit',
+      cycleDate: '1/23/2024',
+    },
+    personalInfo: {
+      dateOfBirth: '1990-05-17',
+      sex: 'Female',
+      email: 'lisa.thompson@email.com',
+      phone: '(555) 456-7890',
+      address: {
+        street: '654 Birch Lane',
+        city: 'Gotham',
+        state: 'NY',
+        zipCode: '10004'
+      }
+    },
+    planInfo: {
+      productType: 'Initial Consultation',
+      planStatus: 'Pending',
+      cycleDate: '2024-01-23',
+      arbMonthlyAmount: 99.99,
+      nextPaymentDate: '2024-02-23',
+      visitBalance: 1,
+      totalVisits: 1
     }
   },
   {
@@ -42,7 +225,7 @@ export const mockPatients: Patient[] = [
     initials: 'CT',
     statusBadges: [
       { type: 'Forms', label: 'Forms' },
-      { type: 'Notes', label: 'Notes' }
+      { type: 'Pay', label: 'Payment Required' }
     ],
     details: {
       dcPreference: 'Dr. Will Murillo, D.C.',
@@ -50,6 +233,27 @@ export const mockPatients: Patient[] = [
       cycleDate: '2/25/2024',
       visitsLeft: '4',
       homeClinic: 'Westside'
+    },
+    personalInfo: {
+      dateOfBirth: '1975-11-30',
+      sex: 'Male',
+      email: 'charles.thompson@email.com',
+      phone: '(555) 345-6789',
+      address: {
+        street: '789 Oak Avenue',
+        city: 'Gotham',
+        state: 'NY',
+        zipCode: '10003'
+      }
+    },
+    planInfo: {
+      productType: 'Standard Care Package',
+      planStatus: 'Active',
+      cycleDate: '2024-02-25',
+      arbMonthlyAmount: 149.99,
+      nextPaymentDate: '2024-03-25',
+      visitBalance: 4,
+      totalVisits: 6
     }
   },
   {
@@ -57,9 +261,8 @@ export const mockPatients: Patient[] = [
     name: 'Christine Wilson',
     initials: 'CW',
     statusBadges: [
-      { type: 'Special', label: 'Special' },
       { type: 'Forms', label: 'Forms' },
-      { type: 'Notes', label: 'Notes' }
+      { type: 'Pay', label: 'Payment Required' }
     ],
     details: {
       dcPreference: 'Dr. Sarah Miller, D.C.',
@@ -67,6 +270,27 @@ export const mockPatients: Patient[] = [
       cycleDate: '3/1/2024',
       visitsLeft: '12',
       homeClinic: 'Downtown'
+    },
+    personalInfo: {
+      dateOfBirth: '1988-04-15',
+      sex: 'Female',
+      email: 'christine.wilson@email.com',
+      phone: '(555) 567-8901',
+      address: {
+        street: '321 Pine Street',
+        city: 'Gotham',
+        state: 'NY',
+        zipCode: '10004'
+      }
+    },
+    planInfo: {
+      productType: 'Wellness Package',
+      planStatus: 'Active',
+      cycleDate: '2024-03-01',
+      arbMonthlyAmount: 249.99,
+      nextPaymentDate: '2024-04-01',
+      visitBalance: 12,
+      totalVisits: 12
     }
   }
 ];
@@ -81,24 +305,24 @@ export const mockSections: Section[] = [
   {
     type: 'withDoctor',
     title: 'With Doctor',
-    notificationCount: 1,
-    patients: [mockPatients[2]]
+    notificationCount: 2,
+    patients: [mockPatients[2], mockPatients[3]]
   },
   {
     type: 'completed',
     title: 'Completed',
-    notificationCount: 0,
-    patients: []
+    notificationCount: 2,
+    patients: [mockPatients[4], mockPatients[5]]
   }
 ];
 
 export const mockAppointments: Appointment[] = [
   {
     id: '1',
-    time: '9:30 AM',
+    time: '9:00 AM',
     patient: {
-      name: 'Thomas Newman',
-      initials: 'TN',
+      name: 'John Smith',
+      initials: 'JS',
       avatarColor: '#024C6F',
       statuses: [
         {
@@ -107,18 +331,18 @@ export const mockAppointments: Appointment[] = [
           bgColor: '#E2FFE9',
         },
         {
-          type: 'Special',
-          color: '#6941C6',
-          bgColor: '#F4F3FF',
-        },
+          type: 'Forms',
+          color: '#026AA2',
+          bgColor: '#E0F2FE',
+        }
       ],
       phone: '(555) 123-4567',
-      leadSource: 'Facebook',
-    },
+      leadSource: 'Website'
+    }
   },
   {
     id: '2',
-    time: '10:15 AM',
+    time: '10:00 AM',
     patient: {
       name: 'Sarah Johnson',
       initials: 'SJ',
@@ -133,35 +357,12 @@ export const mockAppointments: Appointment[] = [
           type: 'Pay',
           color: '#B54708',
           bgColor: '#FEF6EE',
-        },
+        }
       ],
       phone: '(555) 987-6543',
-      leadSource: 'Google',
-    },
-  },
-  {
-    id: '3',
-    time: '11:00 AM',
-    patient: {
-      name: 'Michael Chang',
-      initials: 'MC',
-      avatarColor: '#024C6F',
-      statuses: [
-        {
-          type: 'Special',
-          color: '#6941C6',
-          bgColor: '#F4F3FF',
-        },
-        {
-          type: 'Notes',
-          color: '#175CD3',
-          bgColor: '#EEF4FF',
-        },
-      ],
-      phone: '(555) 456-7890',
-      leadSource: 'LinkedIn',
-    },
-  },
+      leadSource: 'Google'
+    }
+  }
 ];
 
 export const mockDoctors: Doctor[] = [
@@ -255,33 +456,21 @@ export const statusOptions: Array<{
   label: string;
 }> = [
   {
-    type: 'Special',
-    color: '#6941C6',
-    bgColor: '#F4F3FF',
-    label: 'Special Care'
+    type: 'New',
+    color: '#008D3E',
+    bgColor: '#E2FFE9',
+    label: 'New Patient'
   },
   {
     type: 'Forms',
     color: '#026AA2',
     bgColor: '#E0F2FE',
-    label: 'Forms'
+    label: 'Forms Required'
   },
   {
     type: 'Pay',
     color: '#B54708',
     bgColor: '#FEF6EE',
     label: 'Payment Required'
-  },
-  {
-    type: 'Notes',
-    color: '#175CD3',
-    bgColor: '#EEF4FF',
-    label: 'Notes'
-  },
-  {
-    type: 'New',
-    color: '#008D3E',
-    bgColor: '#E2FFE9',
-    label: 'New Patient'
   }
 ]; 

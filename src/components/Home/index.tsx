@@ -26,14 +26,17 @@ const TileRow = styled(Box)({
   display: 'flex',
   gap: 24,
   marginBottom: 24,
+  minWidth: 0,
 });
 
 const SmallTile = styled(Box)({
   flex: 1,
+  minWidth: 0,
 });
 
 const LargeTile = styled(Box)({
   flex: 2,
+  minWidth: 0,
 });
 
 const AppointmentList = styled(Box)({
@@ -204,7 +207,7 @@ const Home: React.FC = () => {
           horizontal: 'left',
         }}
       >
-        <MenuItem onClick={handleViewProfile}>View patient profile</MenuItem>
+        <MenuItem onClick={handleViewProfile}>View patient details</MenuItem>
         <MenuItem onClick={handleReschedule}>Reschedule appointment</MenuItem>
         <MenuItem onClick={handleCancel} sx={{ color: 'error.main' }}>Cancel appointment</MenuItem>
       </Menu>
