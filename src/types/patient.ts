@@ -49,6 +49,7 @@ export interface Patient {
   id: string;
   name: string;
   initials: string;
+  phone: string;
   statusBadges: Array<{
     type: StatusBadgeType;
     label: string;

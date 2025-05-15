@@ -262,9 +262,9 @@ export const mockPatients: Patient[] = [
     id: '8',
     name: 'Christine Wilson',
     initials: 'CW',
+    phone: '9859862787',
     statusBadges: [
-      { type: 'Forms', label: 'Forms' },
-      { type: 'Pay', label: 'Pay' }
+      { type: 'Forms', label: 'Forms' }
     ],
     details: {
       dcPreference: 'Dr. Sarah Miller, D.C.',

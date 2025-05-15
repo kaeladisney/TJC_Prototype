@@ -77,8 +77,10 @@ export const SearchInput: React.FC<SearchInputProps> = ({ onAddToQueue }) => {
 
   useEffect(() => {
     if (searchTerm) {
+      const searchTermLower = searchTerm.toLowerCase();
       const filteredResults = mockPatients.filter(patient =>
-        patient.name.toLowerCase().includes(searchTerm.toLowerCase())
+        patient.name.toLowerCase().includes(searchTermLower) ||
+        (patient.phone && patient.phone.replace(/\D/g, '').includes(searchTerm.replace(/\D/g, '')))
       );
       setSearchResults(filteredResults);
     } else {
