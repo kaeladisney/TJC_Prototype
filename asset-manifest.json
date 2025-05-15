@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/TJC_Prototype/static/css/main.987d914d.css",
-    "main.js": "/TJC_Prototype/static/js/main.c4e7d062.js",
+    "main.js": "/TJC_Prototype/static/js/main.d4ab8e30.js",
     "static/js/453.ed8a526f.chunk.js": "/TJC_Prototype/static/js/453.ed8a526f.chunk.js",
     "static/media/Gotham-Medium.otf": "/TJC_Prototype/static/media/Gotham-Medium.a52599fa8cce74bab773.otf",
     "static/media/Gotham-Book.otf": "/TJC_Prototype/static/media/Gotham-Book.7f34eb053257cab413dc.otf",
@@ -13,11 +13,11 @@
     "index.html": "/TJC_Prototype/index.html",
     "static/media/Add.svg": "/TJC_Prototype/static/media/Add.5798f405eb11240c2557635cf828cf75.svg",
     "main.987d914d.css.map": "/TJC_Prototype/static/css/main.987d914d.css.map",
-    "main.c4e7d062.js.map": "/TJC_Prototype/static/js/main.c4e7d062.js.map",
+    "main.d4ab8e30.js.map": "/TJC_Prototype/static/js/main.d4ab8e30.js.map",
     "453.ed8a526f.chunk.js.map": "/TJC_Prototype/static/js/453.ed8a526f.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.987d914d.css",
-    "static/js/main.c4e7d062.js"
+    "static/js/main.d4ab8e30.js"
   ]
 }
