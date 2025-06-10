@@ -14,7 +14,7 @@ const Search = styled('div')(({ theme }) => ({
   borderRadius: 8,
   backgroundColor: '#FFFFFF',
   border: '1px solid rgb(154, 164, 178)',
-  width: '300px',
+  width: '620px',
   height: '44px',
   transition: theme.transitions.create(['width', 'border-color', 'border-width'], {
     duration: theme.transitions.duration.standard,
@@ -135,7 +135,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({ onAddToQueue }) => {
           <SearchIcon />
         </SearchIconWrapper>
         <StyledInputBase
-          placeholder="Search patients by name or phone..."
+          placeholder="Search"
           inputProps={{ 'aria-label': 'search patients' }}
           onFocus={handleFocus}
           value={searchTerm}
