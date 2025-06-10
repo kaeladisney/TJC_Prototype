@@ -14,18 +14,29 @@ import AddIcon from '../icons/Add';
 import { SearchInput } from '../SearchInput';
 import { Patient } from '../../types/patient';
 import { useLeftPaneContext } from '../LeftPane/LeftPaneContext';
+import './Header.css';
 
-const HeaderWrapper = styled(Box)({
+const HEADER_HEIGHT = 76;
+
+const HeaderBar = styled(Box)({
+  width: '100vw',
+  height: HEADER_HEIGHT,
+  background: '#00374B',
+  borderBottom: '1px solid #CDCFDF',
+  boxShadow: '0px 1px 2px rgba(16, 24, 40, 0.05)',
+  display: 'flex',
+  alignItems: 'center',
   position: 'fixed',
   top: 0,
   left: 0,
-  right: 0,
-  height: 76,
-  backgroundColor: '#FFFFFF',
-  zIndex: 1000,
+  zIndex: 1100,
+});
+
+const LogoBox = styled(Box)({
+  marginLeft: 20,
   display: 'flex',
   alignItems: 'center',
-  padding: '0 24px',
+  height: '100%',
 });
 
 const LogoSection = styled(Box)({
@@ -94,9 +105,12 @@ const Header: React.FC = () => {
   };
 
   return (
-    <HeaderWrapper>
+    <HeaderBar>
+      <LogoBox>
+        {/* Remove the Logo component and its container from the header */}
+      </LogoBox>
       <LogoSection>
-        <Typography sx={{ color: '#282829', fontWeight: 500 }}>Frontoffice</Typography>
+        <Typography sx={{ color: '#fff', fontWeight: 500 }}>Frontoffice</Typography>
         <Box sx={{ width: 2, height: 24, bgcolor: '#E2E2E6', mx: 1 }} />
         <OrganizationSection>
           <Typography sx={{ color: '#282829' }}>Gotham Clinic</Typography>
@@ -121,16 +135,16 @@ const Header: React.FC = () => {
       <Divider sx={{marginRight: '16px'}} />
       <IconButtonContainer>
         <IconButton>
-          <NotificationsIcon />
+          <NotificationsIcon className="header-icon-white" color="#fff" />
         </IconButton>
         <IconButton>
-          <GetFeedbackIcon />
+          <GetFeedbackIcon className="header-icon-white" color="#fff" />
         </IconButton>
         <IconButton>
-          <ProfileImage />
+          <ProfileImage width={40} height={40} />
         </IconButton>
       </IconButtonContainer>
-    </HeaderWrapper>
+    </HeaderBar>
   );
 };
 

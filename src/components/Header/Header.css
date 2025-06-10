@@ -1,0 +1,11 @@
+.header-icon-white {
+  fill: #fff !important;
+  color: #fff !important;
+}
+.header-icon-white svg path,
+.header-icon-white svg circle,
+.header-icon-white svg rect,
+.header-icon-white svg g {
+  fill: #fff !important;
+  stroke: #fff !important;
+} 

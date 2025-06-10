@@ -1,5 +1,5 @@
 import React from 'react';
-import profileImage from './ProfileImage.png';
+import { ReactComponent as AvatarSvg } from './Avatar.svg';
 
 interface ProfileImageProps {
   className?: string;
@@ -9,9 +9,7 @@ interface ProfileImageProps {
 
 export const ProfileImage: React.FC<ProfileImageProps> = ({ className, width = 24, height = 24 }) => {
   return (
-    <img 
-      src={profileImage} 
-      alt="Profile" 
+    <AvatarSvg 
       className={className}
       width={width}
       height={height}
