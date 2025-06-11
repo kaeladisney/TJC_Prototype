@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/TJC_Prototype/static/css/main.d87e1ef1.css",
-    "main.js": "/TJC_Prototype/static/js/main.11eb2699.js",
+    "main.js": "/TJC_Prototype/static/js/main.9e1a1dab.js",
     "static/js/453.ed8a526f.chunk.js": "/TJC_Prototype/static/js/453.ed8a526f.chunk.js",
     "static/media/LoginBgdFull.png": "/TJC_Prototype/static/media/LoginBgdFull.ed37fa6ceee9c2759f2a.png",
     "static/media/LoginImage.png": "/TJC_Prototype/static/media/LoginImage.3f78e3133f1de3f43407.png",
@@ -12,14 +12,27 @@
     "static/media/Gotham-Light.otf": "/TJC_Prototype/static/media/Gotham-Light.a21d1577f411612a2753.otf",
     "static/media/GetFeedback.svg": "/TJC_Prototype/static/media/GetFeedback.2ef7a820fe1b166f0f3e70c89d0d8fc6.svg",
     "static/media/Notifications.svg": "/TJC_Prototype/static/media/Notifications.98d42048f9a3ea1128d9301ad54283ef.svg",
+    "static/media/users-1.svg": "/TJC_Prototype/static/media/users-1.5a1b5ce0f050a8036e64c1ed50519665.svg",
+    "static/media/chat-bubble-bottom-center-text-1.svg": "/TJC_Prototype/static/media/chat-bubble-bottom-center-text-1.efb7d02f5db0d7b8a453a846f03a3ced.svg",
+    "static/media/users.svg": "/TJC_Prototype/static/media/users.651db5174384d0546beb2b22dd2a50c5.svg",
+    "static/media/document-text-1.svg": "/TJC_Prototype/static/media/document-text-1.4343646d9eb2c0adf2e039a0b5123eac.svg",
+    "static/media/clipboard-document-check.svg": "/TJC_Prototype/static/media/clipboard-document-check.9da8bb1e9425e97f011077641a26f0fc.svg",
+    "static/media/home-1.svg": "/TJC_Prototype/static/media/home-1.5d0cf6106354144a9a78fe0556ce255b.svg",
     "index.html": "/TJC_Prototype/index.html",
+    "static/media/calendar-1.svg": "/TJC_Prototype/static/media/calendar-1.056f4d928bfb1796b2bac635770eb452.svg",
+    "static/media/chat-bubble-bottom-center-text.svg": "/TJC_Prototype/static/media/chat-bubble-bottom-center-text.8e4f70ad05b11be5609df4e61751b6e1.svg",
+    "static/media/magnifying-glass-1.svg": "/TJC_Prototype/static/media/magnifying-glass-1.21cf9b333454237f3a23aa266429b001.svg",
+    "static/media/document-text.svg": "/TJC_Prototype/static/media/document-text.8cf7287b7494ac83c1407d680c025e52.svg",
+    "static/media/home.svg": "/TJC_Prototype/static/media/home.71a573166529a2510f52dcf175a27b78.svg",
+    "static/media/calendar.svg": "/TJC_Prototype/static/media/calendar.710627ddd1e850a1ac363fe4969aad98.svg",
+    "static/media/magnifying-glass.svg": "/TJC_Prototype/static/media/magnifying-glass.e47364ae21916adcbbc9ac4f258e0053.svg",
     "static/media/Add.svg": "/TJC_Prototype/static/media/Add.5798f405eb11240c2557635cf828cf75.svg",
     "main.d87e1ef1.css.map": "/TJC_Prototype/static/css/main.d87e1ef1.css.map",
-    "main.11eb2699.js.map": "/TJC_Prototype/static/js/main.11eb2699.js.map",
+    "main.9e1a1dab.js.map": "/TJC_Prototype/static/js/main.9e1a1dab.js.map",
     "453.ed8a526f.chunk.js.map": "/TJC_Prototype/static/js/453.ed8a526f.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.d87e1ef1.css",
-    "static/js/main.11eb2699.js"
+    "static/js/main.9e1a1dab.js"
   ]
 }
