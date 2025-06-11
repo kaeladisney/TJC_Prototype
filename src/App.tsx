@@ -117,10 +117,10 @@ const App: React.FC = () => {
           <Box sx={{ height: '100vh', overflow: 'hidden' }}>
             <Header />
             <AppWrapper>
-              <LeftPane />
               <MainContent>
                 <Content />
               </MainContent>
+              <LeftPane />
             </AppWrapper>
           </Box>
         </LeftPaneProvider>

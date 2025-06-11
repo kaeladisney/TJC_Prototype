@@ -12,7 +12,7 @@ const PatientsWrapper = styled(Box)({
 });
 
 const PageHeader = styled(Box)({
-  padding: '24px',
+  padding: '18px',
   borderBottom: '1px solid #E5E7EB',
   display: 'flex',
   alignItems: 'center',
@@ -20,7 +20,7 @@ const PageHeader = styled(Box)({
 });
 
 const PageTitle = styled(Typography)({
-  fontSize: 24,
+  fontSize: 19,
   fontWeight: 500,
   color: '#363A3D',
 });
@@ -37,7 +37,7 @@ const StyledTabs = styled(Tabs)({
 
 const StyledTab = styled(Tab)({
   textTransform: 'none',
-  fontSize: 14,
+  fontSize: 12,
   fontWeight: 400,
   color: '#282829',
   '&.Mui-selected': {
@@ -48,29 +48,29 @@ const StyledTab = styled(Tab)({
 
 const ContentArea = styled(Box)({
   flex: 1,
-  padding: '24px',
+  padding: '18px',
   backgroundColor: '#FFFFFF',
   overflowY: 'auto',
 });
 
 const PatientGrid = styled(Box)({
   display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-  gap: '24px',
-  padding: '24px',
+  gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
+  gap: '18px',
+  padding: '18px',
 });
 
 const PatientCard = styled(Box)({
   backgroundColor: '#FFFFFF',
-  borderRadius: '12px',
+  borderRadius: '10px',
   border: '1px solid #E5E7EB',
-  padding: '16px',
+  padding: '12px',
   display: 'flex',
   flexDirection: 'column',
-  gap: '16px',
+  gap: '12px',
   cursor: 'pointer',
   '&:hover': {
-    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0px 3px 6px rgba(0, 0, 0, 0.08)',
   },
 });
 

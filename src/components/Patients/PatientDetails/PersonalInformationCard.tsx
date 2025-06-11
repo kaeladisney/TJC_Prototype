@@ -4,12 +4,12 @@ import EditIcon from '@mui/icons-material/Edit';
 
 const Card = styled(Box)({
   backgroundColor: '#FFFFFF',
-  borderRadius: '24px',
+  borderRadius: '18px',
   border: '1px solid #9AA4B2',
-  padding: '24px',
+  padding: '18px',
   display: 'flex',
   flexDirection: 'column',
-  gap: '16px',
+  gap: '12px',
   minWidth: 0,
   width: '100%',
   overflow: 'hidden'
@@ -19,33 +19,33 @@ const Header = styled(Box)({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  paddingBottom: '16px',
+  paddingBottom: '12px',
 });
 
 const Title = styled(Typography)({
   color: '#282829',
-  fontSize: '20px',
+  fontSize: '16px',
   fontWeight: 500,
-  lineHeight: '28px',
+  lineHeight: '22px',
 });
 
 const EditButton = styled(Button)({
   color: '#004C6F',
   textTransform: 'none',
-  padding: '4px 8px',
-  gap: '8px',
+  padding: '3px 6px',
+  gap: '6px',
   '&:hover': {
     backgroundColor: '#F8F9FA',
   },
   '& .MuiSvgIcon-root': {
-    fontSize: '16px',
+    fontSize: '13px',
   },
 });
 
 const Grid = styled(Box)(({ theme }) => ({
   display: 'grid',
   gridTemplateColumns: 'repeat(3, 1fr)',
-  gap: '24px',
+  gap: '18px',
   minWidth: 0,
   width: '100%',
   [theme.breakpoints.down('md')]: {

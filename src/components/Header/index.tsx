@@ -30,7 +30,7 @@ const HeaderBar = styled(Box)({
   top: 0,
   left: 0,
   zIndex: 1100,
-  padding: '0 20px',
+  padding: '0 8px',
 });
 
 const LogoBox = styled(Box)({

@@ -8,12 +8,13 @@ import { useNavigation } from '../../context/NavigationContext';
 import { STATUS_COLORS, StatusColorKey } from '../../constants/statusColors';
 
 const DrawerContainer = styled(Box)({
-  position: 'absolute',
+  position: 'fixed',
   top: 76,
-  left: 0,
-  width: 450,
+  right: 0,
+  width: 360,
   height: 'calc(100vh - 76px)',
   zIndex: 200,
+  borderLeft: '1px solid #E5E7EB', 
 });
 
 const DrawerWrapper = styled(Box)({
@@ -41,15 +42,16 @@ const BackButton = styled(Box)({
   alignItems: 'center',
   gap: 8,
   cursor: 'pointer',
-  '&:hover': {
-    opacity: 0.8,
-  },
+  padding: 8,
+  minWidth: 32,
+  minHeight: 32,
+  borderRadius: 8,
 });
 
 const BackText = styled(Typography)({
-  fontSize: 14,
+  fontSize: '16pt',
   fontWeight: 500,
-  color: '#004C6F',
+  color: '#364152',
   lineHeight: '24px',
 });
 
@@ -65,7 +67,7 @@ const Content = styled(Box)({
   padding: '24px',
   display: 'flex',
   flexDirection: 'column',
-  gap: 24,
+  gap: 4,
 });
 
 const PatientInfoSection = styled(Box)({
@@ -145,8 +147,9 @@ const InfoValue = styled(Typography)({
 
 const ExpandableSection = styled(Box)({
   borderRadius: 12,
-  border: '1px solid #E5E7EB',
+  border: '1px solid #9AA4B2',
   overflow: 'hidden',
+  marginTop: 12,
 });
 
 const ExpandableHeader = styled(Box)({
@@ -188,18 +191,21 @@ const Footer = styled(Box)({
   borderTop: '1px solid #E5E7EB',
   display: 'flex',
   gap: 8,
-  boxShadow: '0px -1px 2px 0px rgba(0, 0, 0, 0.12), 0px 0px 2px 0px rgba(0, 0, 0, 0.12)',
+  //boxShadow: '0px -1p x 2px 0px rgba(0, 0, 0, 0.12), 0px 0px 2px 0px rgba(0, 0, 0, 0.12)',
 });
 
 const SecondaryButton = styled(Button)({
   flex: 1,
-  height: 44,
+  height: 36,
+  minWidth: 0,
   color: '#004C6F',
   backgroundColor: '#F2F6F8',
   borderRadius: 8,
   textTransform: 'none',
-  fontSize: 14,
+  fontSize: 13,
   fontWeight: 500,
+  padding: '0 10px',
+  whiteSpace: 'nowrap',
   '&:hover': {
     backgroundColor: '#E5EEF2',
   },
@@ -207,13 +213,16 @@ const SecondaryButton = styled(Button)({
 
 const PrimaryButton = styled(Button)({
   flex: 1,
-  height: 44,
+  height: 36,
+  minWidth: 0,
   color: '#FCFCFD',
   backgroundColor: '#004C6F',
   borderRadius: 8,
   textTransform: 'none',
-  fontSize: 14,
+  fontSize: 13,
   fontWeight: 500,
+  padding: '0 10px',
+  whiteSpace: 'nowrap',
   boxShadow: '0px 1px 2px 0px rgba(0, 0, 0, 0.12)',
   '&:hover': {
     backgroundColor: '#003B56',
@@ -348,21 +357,21 @@ const PatientDetailsDrawer: React.FC<PatientDetailsDrawerProps> = ({
   if (!patient) return null;
 
   return (
-    <DrawerContainer>
-      <Slide 
-        direction="right" 
-        in={open} 
-        mountOnEnter 
-        unmountOnExit
-        timeout={{
-          enter: 300,
-          exit: 200,
-        }}
-      >
+    <Slide 
+      in={open} 
+      direction="left" 
+      mountOnEnter 
+      unmountOnExit
+      timeout={{
+        enter: 300,
+        exit: 200,
+      }}
+    >
+      <DrawerContainer>
         <DrawerWrapper>
           <Header>
             <BackButton onClick={onClose}>
-              <ChevronLeftIcon sx={{ color: '#364152', width: 20, height: 20 }} />
+              <ChevronLeftIcon sx={{ color: '#364152', width: 24, height: 24 }} />
               <BackText>Back</BackText>
             </BackButton>
           </Header>
@@ -428,7 +437,7 @@ const PatientDetailsDrawer: React.FC<PatientDetailsDrawerProps> = ({
                 <ExpandableHeader onClick={() => setActionItemsExpanded(!actionItemsExpanded)}>
                   <HeaderContent>
                     <Typography variant="subtitle2" color="#364152">
-                      Action Items
+                      Tasks
                     </Typography>
                     <CountBadge>
                       <BadgeText>{actionItems.length}</BadgeText>
@@ -458,7 +467,7 @@ const PatientDetailsDrawer: React.FC<PatientDetailsDrawerProps> = ({
                 </Collapse>
               </ExpandableSection>
 
-              <ExpandableSection>
+              <ExpandableSection style={{ marginTop: 8 }}>
                 <ExpandableHeader onClick={() => setFavoriteNotesExpanded(!favoriteNotesExpanded)}>
                   <HeaderContent>
                     <Typography variant="subtitle2" color="#364152">
@@ -491,6 +500,29 @@ const PatientDetailsDrawer: React.FC<PatientDetailsDrawerProps> = ({
                   </ExpandableContent>
                 </Collapse>
               </ExpandableSection>
+
+              {/* Automated Summary Section */}
+              <Box sx={{ mt: 2 }}>
+                <InfoLabel>Automated Summary</InfoLabel>
+                <InfoValue>
+                  {(() => {
+                    // Example pseudo-random assignment based on patient id or name
+                    if (!patient.id && !patient.name) return null;
+                    const summaries = [
+                      "Last seen 3 weeks ago. It's almost their birthday. Prefers to do walk-ins. Was asked 4 times in the last 6 months to upgrade to a plan/package. Has a history of low back pain—responded well to prior adjustments. Usually comes Tuesday and Thursday mornings.",
+                      "Patient is a regular visitor, typically arriving after work hours. Has a history of neck stiffness, improved with recent treatments. Missed one appointment last month. Prefers text reminders. Has not yet upgraded to a premium plan.",
+                      "Recently completed a care plan. Reports significant improvement in mobility. Enjoys chatting with front desk staff. Has referred two friends in the past year. Birthday is next month.",
+                      "Has a recurring membership. Often brings family members for visits. Responds well to adjustments for upper back pain. Usually books appointments online. Last seen 10 days ago."
+                    ];
+                    // Use patient id or name to pick a summary
+                    const key = patient.id || patient.name || '';
+                    let hash = 0;
+                    for (let i = 0; i < key.length; i++) hash += key.charCodeAt(i);
+                    const idx = hash % summaries.length;
+                    return summaries[idx];
+                  })()}
+                </InfoValue>
+              </Box>
             </Content>
           </ScrollableContent>
 
@@ -503,8 +535,8 @@ const PatientDetailsDrawer: React.FC<PatientDetailsDrawerProps> = ({
             </PrimaryButton>
           </Footer>
         </DrawerWrapper>
-      </Slide>
-    </DrawerContainer>
+      </DrawerContainer>
+    </Slide>
   );
 };
 

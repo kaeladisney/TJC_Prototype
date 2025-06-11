@@ -25,10 +25,11 @@ const getStatusBgColor = (type: StatusBadgeType): string => {
 };
 
 const PaneWrapper = styled(Box)<{ isCollapsed: boolean }>(({ isCollapsed }) => ({
-  width: isCollapsed ? 88 : 450,
+  width: isCollapsed ? 70 : 360,
   height: '100%',
   backgroundColor: '#F8FAFC',
   borderRight: '1px solid #E5E7EB',
+  borderLeft: '1px solid #E5E7EB',
   transition: 'width 0.3s ease',
   display: 'flex',
   flexDirection: 'column',
@@ -41,16 +42,16 @@ const Header = styled(Box)<{ isCollapsed: boolean }>(({ isCollapsed }) => ({
   padding: isCollapsed ? '0 32px' : '16px 24px',
   display: 'flex',
   alignItems: 'center',
-  justifyContent: isCollapsed ? 'center' : 'space-between',
+  justifyContent: isCollapsed ? 'center' : 'flex-start',
   backgroundColor: '#F8FAFC',
   position: 'relative',
   borderBottom: '1px solid #E5E7EB',
 }));
 
 const PaneHeaderText = styled(Typography)<{ isCollapsed: boolean }>(({ isCollapsed }) => ({
-  color: '#004C6F',
-  fontSize: 14,
-  fontWeight: 600,
+  color: '#364152',
+  fontSize: '15pt',
+  fontWeight: 500,
   opacity: isCollapsed ? 0 : 1,
   transition: 'opacity 0.2s ease-in-out',
   whiteSpace: 'nowrap',
@@ -58,14 +59,14 @@ const PaneHeaderText = styled(Typography)<{ isCollapsed: boolean }>(({ isCollaps
 }));
 
 const Content = styled(Box)<{ isCollapsed: boolean }>(({ isCollapsed }) => ({
-  padding: isCollapsed ? '12px 0' : '24px',
-  paddingTop: '24px',
+  padding: isCollapsed ? '10px 0' : '18px',
+  paddingTop: '18px',
   flex: 1,
   overflowY: 'auto',
   display: 'flex',
   flexDirection: 'column',
   width: '100%',
-  gap: isCollapsed ? '24px' : '0px',
+  gap: isCollapsed ? '18px' : '0px',
   '& > *': {  // Ensure all direct children take full width
     width: '100%'
   }
@@ -297,10 +298,10 @@ const LeftPane: React.FC = () => {
   return (
     <PaneWrapper isCollapsed={isCollapsed}>
       <Header isCollapsed={isCollapsed}>
-        {!isCollapsed && <PaneHeaderText isCollapsed={isCollapsed}>Patient Queue</PaneHeaderText>}
-        <IconWrapper isCollapsed={isCollapsed} onClick={toggleCollapse}>
+        <IconWrapper isCollapsed={isCollapsed} onClick={toggleCollapse} sx={{ marginRight: !isCollapsed ? 1 : 0 }}>
           {isCollapsed ? <ExpandIcon /> : <CollapseIcon />}
         </IconWrapper>
+        {!isCollapsed && <PaneHeaderText isCollapsed={isCollapsed}>Patient Queue</PaneHeaderText>}
       </Header>
       <Content isCollapsed={isCollapsed}>
         <DndProvider backend={HTML5Backend}>
@@ -400,16 +401,15 @@ const LeftPane: React.FC = () => {
             </PatientSection>
           </SectionWrapper>
         </DndProvider>
+        <PatientDetailsDrawer
+          open={isDetailsDrawerOpen}
+          patient={selectedPatient}
+          onClose={closeDetailsDrawer}
+          onViewProfile={handleViewProfile}
+          onCheckout={handleCheckout}
+          favoriteNotes={favoriteNotes}
+        />
       </Content>
-
-      <PatientDetailsDrawer
-        open={isDetailsDrawerOpen}
-        onClose={closeDetailsDrawer}
-        patient={selectedPatient}
-        onCheckout={handleCheckout}
-        onViewProfile={handleViewProfile}
-        favoriteNotes={favoriteNotes}
-      />
     </PaneWrapper>
   );
 };
