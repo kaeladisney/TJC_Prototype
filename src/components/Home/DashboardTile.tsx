@@ -35,7 +35,7 @@ const DashboardTile: React.FC<Props> = ({
 }) => {
   return (
     <Paper
-      elevation={2}
+      elevation={0}
       sx={{
         borderRadius: 2,
         height: '100%',
@@ -43,6 +43,7 @@ const DashboardTile: React.FC<Props> = ({
         flexDirection: 'column',
         overflow: 'hidden',
         gridColumn: isLarge ? 'span 2' : 'span 1',
+        boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.16)',
       }}
     >
       <TileHeader>
